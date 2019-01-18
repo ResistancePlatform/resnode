@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "secure": "https://securenodes.resistancesystem.io/api/srvlist",
+    "super": "https://supernodes.resistancesystem.io/api/srvlist",
+    "testnet": "https://securenodes.testnet.resistancesystem.io/api/srvlist"
+  },
+  "domain": "resistancesystem.io",
+  "protocol": "https"
+}

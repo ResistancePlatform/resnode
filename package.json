@@ -1,0 +1,28 @@
+{
+  "name": "resistancesecnodetracker",
+  "version": "0.3.1",
+  "description": "resistancecash secure and super node tracking application",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ResistancecashOfficial/secnodetracker"
+  },
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup": "node setup.js"
+  },
+  "author": "Allan Dumaine for Resistance Blockchain Foundation",
+  "license": "MIT",
+  "dependencies": {
+    "jsonfile": "^4.0.0",
+    "node-localstorage": "^1.3.0",
+    "promptly": "^2.2.0",
+    "socket.io-client": "2.0.4",
+    "stdrpc": "^1.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.12.0"
+  }
+}
