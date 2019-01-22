@@ -84,7 +84,7 @@ exports.getResistanceConfig = () => {
     process.exit();
   }
   if (!resistancecfg.port) {
-    console.log('Port not found in resistance.conf. Add \'port=9033\' for mainnet or \'port=19033\' for testnet');
+    console.log('Port not found in resistance.conf. Add \'port=8132\' for mainnet or \'port=18132\' for testnet');
     process.exit();
   }
 
