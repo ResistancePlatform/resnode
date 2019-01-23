@@ -186,6 +186,7 @@ const switchServer = (server) => {
   curIdx = nextIdx;
   console.log(logtime(), `Trying server: ${curServer}`);
   socket.close();
+  console.log(protocol + curServer + domain)
   socket = io.connect(protocol + curServer + domain);
   setSocketEvents();
   SNode.socket = socket;
@@ -278,7 +279,7 @@ const setSocketEvents = () => {
         break;
 
       case 'networks':
-        SNode.getNets(data);
+        SNode.getNetworks(data);
         break;
 
       case 'changeServer':

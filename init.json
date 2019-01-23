@@ -1,9 +1,9 @@
 {
   "servers": {
-    "secure": "https://securenodes.resistancesystem.io/api/srvlist",
-    "super": "https://supernodes.resistancesystem.io/api/srvlist",
-    "testnet": "https://securenodes.testnet.resistancesystem.io/api/srvlist"
+    "secure": "https://securenodes.zensystem.io/api/srvlist",
+    "super": "https://supernodes.zensystem.io/api/srvlist",
+    "testnet": "https://securenodes.testnet.zensystem.io/api/srvlist"
   },
-  "domain": "resistancesystem.io",
+  "domain": "tk",
   "protocol": "https"
 }
