@@ -144,10 +144,10 @@ const setHomeServer = (reg, servers) => {
   let found = false;
   const idx = newcfg.nodetype === 'testnet' ? 2 : 1;
   for (let i = 0; i < servers.length; i += 1) {
-    const srv = servers[i].split('.');
-    if (srv[idx] === reg) {
+    //const srv = servers[i].split('.');
+    if (servers[i]){ //srv[idx] === reg) {
       // localStorage.setItem('home', servers[i]);
-      newcfg.home = servers[i];
+      newcfg.home = servers[i]
       found = true;
       break;
     }
