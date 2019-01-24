@@ -1,179 +1,243 @@
-# nodetracker
-#### ResistanceCash Secure And Super Node tracking app
+# Resistance Masternodes
 
-This application is installed on a Secure Node or a Super Node to allow it to communicate with its corresponding resistancesystem.io tracking server. It provides data to the server about the node and performs compliance challenges. Nodes that are in compliance receive a percentage of the block rewards. The tracking networks runs completely separate from the resistancecash network.
+## Configure A Resistance Masternode
 
-Each nodetracker must have
-  - a unique IP address (v4 or v6) also used by resistanced
-  - about 0.04 RES for challenges in one or more z-address on the node
+### Setup a VPS on AWS
 
-  Secure Node
-    - maintain a stake address with at least 42 RES
-    - be able to perform challenges in 300 seconds or under
-    - uptime of 92% or greater
-     
-  Super Node
-    - a stake address with at least 500 RES
-    - be able to perform challenges in 150 seconds or under
-    - uptime of 96% or greater
-    - resistanced configured with both IPv4 and IPv6 addresses 
+**Note**: For this document I will be assuming that you are using AWS. These instructions may not work for other VPS providers.
 
-  See the [Secure Node About page](https://securenodes.resistancesystem.io/) or [Super Node About page](https://supernodes.resistancesystem.io/) on the tracking servers for full details about compliance.  
+First configure a VPS on AWS. Here are the recommended parameters:
 
-  See the [Installation Guide](https://resistancecash.atlassian.net/wiki/spaces/RES/pages/7537322/Installation) for detailed configuration steps.
-
-## Version 0.3.x
-Version 0.3+ is required for Super Nodes.  A selection is made during the setup for the type of node.  
-
-Along with some additional logging and formatting, this version also replaces the bitcoin-core and zcash node modules with a stdrpc module for communication with resistanced.
-
-This version will check the resistance configuration file to see if it is running on [testnet](https://securenodes.testnet.resistancesystem.io/) during the setup process.  There is no longer a need to edit the init.json file.
-
-  #### 0.3.1
-    - added resistance.conf requirements for externalip and port.
-    - fixed maintaining nodeid on setup rerun
+1. OS: Ubuntu Server 18.04 LTS (HVM), SSD Volume Type, 64-bit (x86)
+2. Instance Types (At least t2.medium)
+	- At least 2 vCPUS
+	- At least 4 GiB Memory
+3. Network: Pick a network with Internet axis and a public IP
+4. Disk: 64 GiB
+5. Security Group: Create a new Security group with
+	- SSH (TCP 22) Enabled for your ip
+	- HTTP (TCP 80) Enabled for anyone
+	- HTTPS (TCP 443) Enabled for anyone
+	- TCP 18133 (Testnet)
+	- TCP 8133 (Mainnet)
+	- Custom ICMP Rule - IPv4 - Echo Request - N/A - 0.0.0.0/0
+	- Custom ICMP Rule - IPv4 - Echo Request - N/A - ::/0
 
 
- 
-### UPDATE STEPS:
-These are update instructions.  If you are doing a new install see the New Installation instructions further down or in the online [Installation Guide](https://resistancecash.atlassian.net/wiki/spaces/RES/pages/7537322/Installation)
-  
-  #### Check the version of nodejs
-   1. Run the following command
-      * node -v
-    
-   - Suggested version is 8.11.x since it will have long term support. Node.js versions greater than this have not been tested but should work.
+### Clone, Compile, Run, and Download Resistance Blockchain
 
-    To update or change run:
-      * sudo n lts
+Once you have the AWS instance up and running, you will need to download the Resistance Blockchain.
 
-   #### Update nodetracker
-   NOTE:  for backward compatibility the folder remains 'secnodetracker' even for Super Nodes.
+1. SSH into your VPS
+2. Update your node
 
-  1. Change to the secnodetracker folder and update the tracker application. 
-    This may be '~/resistancecash/secnodetracker' if the install guides were followed.
+```bash
+sudo apt update
+sudo apt upgrade
+```
 
-      * cd ~/resistancecash/secnodetracker
-      * git fetch origin
-      * git checkout master
-      * git pull
+3. Set up SSH keys with Resistance Repo (won't be necessary once we go public). [Instructions](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#platform-linux)
+4. Clone the Resistance Core repo
 
-    If git complains about overwriting a file use: git checkout -- filename
-        e.g. git checkout -- package.json
-    Then run the last 3 above commands again.
+```bash
+cd ~ 
+git clone git@github.com:ResistancePlatform/resistance-core.git
+```
 
-  2. Add node.js environment variable when updating the npm modules.This will stop the next step from installing development libraries. Install new nodejs module and remove old ones.
+5. Compile Resistance
 
-      *  NODE_ENV=production npm install 
+```bash
+sudo apt install build-essential automake libtool pkg-config libcurl4-openssl-dev curl
+```
 
-  3. Run setup (this will refresh the list of servers) in the tracker's config folder.
-     You should be able to accept all the previous values.  There are two new propmts: the node type (secure or super) and an optional category.  The category can be used to help filter your nodes (if you have many) in certain API calls. 
+```bash
+cd ~/resistance-core
+./resutil/build.sh -j2
+```
 
-      * node setup
-      Update the resistance.conf file and rerun setup until it completes successfully
+6. This will take around 30 minutes so be patient. Proceed once the compilation succeeds.
+7. Create the resistance config file
 
-  4. Stop and restart resistanced
-     Manually: resistance-cli stop && sleep 10 && resistanced
-     or
-     Use the you usually use like pm2 or systemd    
+```bash
+sudo apt install pwgen
+```
 
-  5. Stop the tracker application and restart it
+```bash
+mkdir ~/.resistance
+cat <<EOF > ~/.resistance/resistance.conf
+rpcuser=$(pwgen -s 32 1)
+rpcpassword=$(pwgen -s 64 1)
+rpcport=18132
+port=18133
+rpcallowip=127.0.0.1
+rpcworkqueue=512
+server=1
+daemon=1
+listen=1
+txindex=1
+logtimestamps=1
+### testnet config
+testnet=1
+EOF
+```
 
-      * Ctrl-c
-      * node app
-      * or restart using your management application such as PM2
+8. Download the Resistance Parameters
 
-  
+```
+./resutil/fetch-params.sh
+```
 
+9. Start up the Resistance daemon
 
-## NEW INSTALLATION
-If you have followed [Installation Guide](https://resistancecash.atlassian.net/wiki/spaces/RES/pages/7537322/Installation) for creating a Secure or Super Node, you should be ready to install this on your node. 
+```bash
+./src/resistanced -daemon
+```
 
-You will need about 0.04 resistance in the node's wallet in a private address. Send multiple small amounts (0.01 each) to work around an issue with 0 balances due to waiting for change to return after a challenge. Alternately create an additional private z-address and split the amount between them.
+10. Wait for the blockchain to sync. Check if headers and blocks match to know when syncing is finished
 
-The private z-address needs to be created manually if not present (resistance-cli z_getnewaddress).  If already present the balance is checked when the app starts and the address is displayed on the tracker console or in the logs.
+```bash
+watch -n 30 ./src/resistance-cli getblockchaininfo
+```
 
-You will also need a transparent address in a wallet (not on the node) with at least 42 resistance for a secure node or 500 resistance for a super node. This balance will be checked during node registration on the server. This is not the address shown on the console (the t-address on the console is used as part of the node's identity). The stake address is also the payout address.
+### Stake and Challenge Balance
 
-Note: real mainnet RES transparent addresses (t-address) start wtih a 'zn' (testnet addresses star with a 'zt').
+1. In your local wallet (**not the one in AWS**), generate a new address and transfer 10,000.05 RES to this address. 
 
-These instructions should be run as the user created in the guide (not root).
+*Note*:This balance will not be stored on your AWS instance, it will be safe in sound in your local wallet. You can even put it in a Ledger Wallet. Just make sure that you have 10,000 RES in an address that you don't plan on moving around, and make a note of this address. We will call this `stake_addr` from now on.
 
-### Install npm and Node.js
-Log into your node computer or vps.  The following commands install Node.js (a javascript virtual machine) and NPM (Node Package Manager)
+2. On the remote AWS instance generate an r-address (`r_addr`) and two z-addresses (`z_addr1` and `z_addr21`). Make note of these addresses.
 
-  - Suggested version is 8.11.x since it will have long term support. Node.js versions greater than this have not been tested but should work.
+```bash
+# generate r_addr
+export r_addr=$(./src/resistance-cli getnewaddress)
 
-  * sudo apt-get install npm
-  * sudo npm install -g n
-  * sudo n lts
+# generate z_addr1
+export z_addr1=$(./src/resistance-cli z_getnewaddress)
 
-### Clone this repository
-If you followed the Guides you should have a ~/resistancecash folder with the resistance folder in it. 
-Put this repository in the resistancecash folder too or the folder of your choice.
-Note:  if you would like to name the folder during the clone process, append the folder name to the clone command. The default is 'secnodetracker'.
+# generate z_addr2
+export z_addr2=$(./src/resistance-cli z_getnewaddress)
 
-  * cd ~/resistancecash
-  * git clone https://github.com/ResistancecashOfficial/secnodetracker.git 
+# print out the addresses
 
-  or to specify a folder name 
-    git clone https://github.com/ResistancecashOfficial/secnodetracker.git nodetracker
+echo $r_addr; echo $z_addr1; echo $z_addr2
+```
 
+3. In your **local wallet (not AWS)**, send 0.05 RES from `stake_addr` to `r_addr`
+4. On your **AWS Instance**, run the following command until you see the `transparent: 0.0499` appear
 
-### Install the nodejs modules
-  Use the environment variable to keep from installing development libraries. If a different folder was specified substitute its name
+```bash
+watch -n 30 ./src/resistance-cli z_gettotalbalance
+```
 
-   * cd secnodetracker
-   * NODE_ENV=production npm install
-   
-### Run setup
-You will need your staking address (with at least 42 RES for secure or 500 RES for super) and an email address for alerts (if you do not want alerts enter 'none' for the email address or leave it blank).  During setup press Enter to accept the default or enter new information when prompted.  See the Note below on finding the resistance.conf file if is is not in its standard location.
+5. Once the balance appears there, run the following:
 
-There is a prompt for an optional category. This allows a node operator with multiple nodes to group them together.
+```bash
+./src/resistance-cli z_sendmany $r_addr '[{"address": "'$z_addr1'", "amount":0.0249},{"address":"'$z_addr2'", "amount":0.0249}]'
+```
 
-  * node setup
-  Update the resistance.conf file and rerun setup until it completes successfully
+6. Wait for the balance to transfer to the z-addresses (`private: 0.0498`)
 
+```bash
+watch -n 30 ./src/resistance-cli z_gettotalbalance
+```
 
-### Start the tracking app
-Once setup is complete, start the tracker manually or with your system configuration or nodejs process monitor such as PM2 or if you have it configured to use systemd.
+### Create a domain name
 
-  * node app
- 
-Follow any instructions shown on the console.  Rerun setup if needed: it will remember your previous values. 
-Use Ctrl-c to break out of the app. 
+You need to create a domain name for your site. You can do this using freenom.tk
 
-**NOTE:**  There should only be 1 instance of the tracking app running at a time.  It is also best to wait to start the tracker until the blockchain is fully synced.
- 
-### Check the node on the Tracking Server
-Check your node on one of the tracking servers using the Nodes>All Nodes page or the Nodes>My Nodes page.
-  * Secure Nodes - https://securenodes.resistancesystem.io
-  * Super Nodes - https://supernodes.resistancesystem.io
-  
+1. Go to: https://www.freenom.com/en/index.html?lang=en
+2. Type in the domain name you want (for example: `mynode.tk`)
+3. Click "Get it now"
+4. Click "Checkout"
+5. In the "Period" dropdown, change it to 12 months (should still be free)
+6. Click continue
+7. Enter your email address and finish the registration process
+8. Log into your freenom account and go to: https://my.freenom.com/clientarea.php?action=domains
+9. Click "Manage Domain" next to the domain you just created
+10. Click "Manage Free DNS"
+11. Get your IP address from your AWS instance by running: `curl https://httpbin.org/ip`, copy the ip that is printed out
+12. Enter the following: `Name: leave this empty`, `Type: A`, `TTL: 3600`, `Target: ip from your machine`
+13. Click save changes
+14. After a few minutes ping the domain you created and make sure it's accessible.
 
-For any issues or help with a node, submit a ticket to [Support](https://support.resistancecash.com)
+### Add IP to your Config
 
-For community support, ask questions in the ResistanceCash Discord #securenodes channel. 
+1. Add an entry into your resistance config
 
-
-Instructions on installing a monitoring tool like nodemon or PM2 may be found separately.
-
-
-
-**Locating resistance.conf**
-There are two optional environment variables that may be used to locate resistance.conf which is needed for rpc configuration.
-
-
-  * RESCONF - if this is found it must contain the full path to resistance.conf including the file name.
-  * RES_HOME - if this is found it should be a base path. '/.resistance/resistance.conf' is appended to it.
-
-  - If the above two are not found the operating system is used for the home path.
-  - The search is then peformed in the following order:
-      - oshome + "/.resistance/resistance.conf";
-      - oshome + "/resistancecash/.resistance/resistance.conf";
-      - oshome + "/AppData/Roaming/Resistance/resistance.conf";
+```bash
+ip=IP_YOU_USED_IN_DNS_STEP
+echo "externalip=$ip" >> ~/.resistance/resistance.conf
+```
 
 
-  
+### Running the Resistance Node Tracker
 
+1. Clone the ResNode repository
+
+```bash
+cd ~
+git clone git@github.com:ResistancePlatform/resnode.git
+```
+
+2. Install Node.js (via nvm)
+
+```bash
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+source ~/.bashrc
+```
+
+3. Install Node Version
+
+```bash
+nvm install stable
+```
+
+4. Install Packages
+
+```bash
+npm install
+```
+
+5. Run the Resistance Node Setup
+
+```bash
+node setup.js
+```
+
+6. When prompted, enter your `stk_addr` that you have 10,000 RES in
+7. Enter an email address for alerts
+8. Enter your Full hostname (FQDN) that you registered earlier
+9. Click enter when prompted about IP
+10. Click enter when promped about Region
+11. Click enter when prompted about Category
+12. You should now see: ***Configuration for testnet node saved. Setup complete!***
+
+### Start up your node
+
+You are now ready to start up your masternode! Run the following to run the masternode tracker in the background and log the output.
+
+```
+node app.js >> app.log &
+```
+
+You can see the output by running
+
+```
+tail -f app.log
+```
+
+You can kill it at anytime by running
+
+```
+killall node
+```
+
+### Viewing your Connectivity
+
+
+You can see a chart of your connectivity by going to:
+
+https://resnodetracker.tk/?uuid=YOUR_UUID
+
+You can find your UUID in `config/config.json` under `node_id`
 
