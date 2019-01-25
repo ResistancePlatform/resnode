@@ -214,22 +214,27 @@ node setup.js
 
 ### Start up your node
 
-You are now ready to start up your masternode! Run the following to run the masternode tracker in the background and log the output.
+You are now ready to start up your masternode! Let's install PM2 so that the process handling is easier.
 
 ```
-node app.js >> app.log &
+npm install -g pm2
+```
+
+```
+pm2 app.js
+pm2 save
 ```
 
 You can see the output by running
 
 ```
-tail -f app.log
+pm2 logs app
 ```
 
 You can kill it at anytime by running
 
 ```
-killall node
+pm2 stop app
 ```
 
 ### Viewing your Connectivity
