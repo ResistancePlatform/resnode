@@ -23,6 +23,7 @@ First configure a VPS on AWS. Here are the recommended parameters:
 	- Custom ICMP Rule - IPv4 - Echo Request - N/A - 0.0.0.0/0
 	- Custom ICMP Rule - IPv4 - Echo Request - N/A - ::/0
 
+Note: Ensure that you select **Echo Request** in the ICMP configuration. Echo Reply will not work.
 
 ### Clone, Compile, Run, and Download Resistance Blockchain
 
