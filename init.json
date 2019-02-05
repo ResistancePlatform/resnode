@@ -1,6 +1,6 @@
 {
   "servers": {
-    "secure": "https://resnodetracker.tk/api/srvlist",
+    "secure": "https://3.222.22.221/api/srvlist",
     "super": "https://resnodetracker.tk/api/srvlist",
     "testnet": "https://resnodetracker.tk/api/srvlist"
   },
