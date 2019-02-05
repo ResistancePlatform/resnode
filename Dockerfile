@@ -13,3 +13,6 @@ CMD ./resutil/build.sh -j2 --skip-tests
 
 # Node app
 # Need to determine correct automation steps here. . .
+# https://medium.com/@mccode/processes-in-containers-should-not-run-as-root-2feae3f0df3b
+# https://medium.com/@mccode/understanding-how-uid-and-gid-work-in-docker-containers-c37a01d01cf
+
