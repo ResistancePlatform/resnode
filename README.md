@@ -12,7 +12,7 @@ First configure a VPS on AWS. Here are the recommended parameters:
 2. Instance Types (At least t2.medium)
 	- At least 2 vCPUS
 	- At least 4 GiB Memory
-3. Network: Pick a network with Internet axis and a public IP
+3. Network: Pick a network with Internet access and a public IP
 4. Disk: 64 GiB
 5. Security Group: Create a new Security group with
 	- SSH (TCP 22) Enabled for your ip
