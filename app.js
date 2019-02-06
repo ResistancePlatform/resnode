@@ -10,7 +10,7 @@ const init = require('./init');
 const configuration = require('./config/config');
 var app = require('express')();
 var server = require('http').Server(app);
-var peer = new Peer('asdf', {host:'resnodetracker.tk', path:'/peerjs'})
+var peer = new Peer('asdf', {host:'resnodetracker.tk', path:'/peerjs', port:443, secure:true})
 const listener = server.listen(3000, function() {
   console.log('Your app is listening on port ' + listener.address().port);
 });
