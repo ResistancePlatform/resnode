@@ -7,6 +7,12 @@ const SNode = require('./SNodeTracker').auto();
 const pkg = require('./package.json');
 const init = require('./init');
 const configuration = require('./config/config');
+var app = require('express')();
+var server = require('http').Server(app);
+
+const listener = server.listen(3000, function() {
+  console.log('Your app is listening on port ' + listener.address().port);
+});
 
 const file = './config/config.json';
 
@@ -56,6 +62,8 @@ const domain = `.${init.domain}`;
 
 let socket = io(protocol + curServer + domain, { multiplex: false });
 let p2psocket = p2p.p2pInit(socket)
+require('./routes.js')(app,p2psocket);
+
 let failoverTimer;
 
 // get cpu config
