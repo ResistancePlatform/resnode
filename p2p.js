@@ -5,6 +5,7 @@ function p2pInit(socket){
   p2p.on('peer-msg', function (data) {
     console.log('From a peer %s', data);
   });
+  return p2p
 }
 
 module.exports = {p2pInit}
