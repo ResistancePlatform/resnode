@@ -1,6 +1,7 @@
 // const { LocalStorage } = require('node-localstorage');
 const jsonfile = require('jsonfile');
 const io = require('socket.io-client');
+const p2p = require("./p2p.js")
 const os = require('os');
 const SNode = require('./SNodeTracker').auto();
 const pkg = require('./package.json');
@@ -54,6 +55,7 @@ const protocol = `${init.protocol}://`;
 const domain = `.${init.domain}`;
 
 let socket = io(protocol + curServer + domain, { multiplex: false });
+let p2psocket = p2p.p2pInit(socket)
 let failoverTimer;
 
 // get cpu config
