@@ -25,6 +25,8 @@ if (!configuration) {
 const nodetype = configuration.active;
 const config = configuration[nodetype];
 
+require('./p2p.js')(config)
+
 if (config.ipv === '6') {
   console.log('You setup ipv6 connectivity. We need to apply a workaround for dns resolution.');
   require('./ipv6-dns-workaround');
