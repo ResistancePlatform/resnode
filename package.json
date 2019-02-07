@@ -14,9 +14,11 @@
   "author": "Allan Dumaine for Resistance Blockchain Foundation",
   "license": "MIT",
   "dependencies": {
+    "bitcoin-core": "^2.0.0",
     "crypto": "^1.0.1",
     "dat-swarm-defaults": "^1.0.2",
     "discovery-swarm": "^5.1.4",
+    "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "get-port": "^4.1.0",
     "hex2ascii": "0.0.3",

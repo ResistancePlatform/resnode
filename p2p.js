@@ -4,8 +4,10 @@ const defaults = require('dat-swarm-defaults')
 const getPort = require('get-port')
 const readline = require('readline')
 const hex2ascii = require('hex2ascii')
+const moment = require('moment')
+const RpcClient = require('./resistancerpc.js')
 
-if(!process.env.resPrivateKey){
+/*if(!process.env.resPrivateKey){
   console.log("You need to set the resPrivateKey env variable")
   process.exit()
 }
@@ -13,22 +15,40 @@ if(!process.env.resPrivateKey){
 if(!process.env.resAddress){
   console.log("You need to set the resAddress env variable")
   process.exit()
-}
-
+}*/
 
 
 /**
  * Here we will save our TCP peer connections
  * using the peer id as key: { peer_id: TCP_Connection }
  */
+var rpc = new RpcClient()
 const peers = {}
 // Counter for connections, used for identify connections
 let connSeq = 0
+var myId = ""
 
-// Peer Identity, a random hash for identify your peer
-var resAddress = process.env.resAddress
-const myId = Buffer.from(resAddress, "utf-8") //crypto.randomBytes(32)
-console.log('Your identity: ' + myId)
+async function register(resAddress, resPublicKey) {
+  var registration = JSON.stringify({address: resAddress, publickey: resPublicKey, timestamp:moment().valueOf()})
+  var signature = await rpc.signMessage(resAddress, registration)
+  console.log("Signature: " + signature)
+  //console.log(await rpc.verifyMessage(await rpc.getPublicAddress(), signature, message))
+}
+
+;(async () => {
+    try {
+      // Peer Identity, a random hash for identify your peer
+      console.log("starting")
+      var resAddress = await rpc.getPublicAddress()
+      myId = Buffer.from(resAddress, "utf-8") //crypto.randomBytes(32)
+      console.log('Your identity: ' + myId)
+      console.log(await register(resAddress, await rpc.getPublicKey(resAddress)))
+    } catch (e) {
+        console.log(e)
+    }
+})();
+
+//process.exit(0)
 
 // reference to redline interface
 let rl
@@ -52,9 +72,9 @@ function getPubKey(resAddress){
   return registry[resAddress]
 }
 
-function getPrivateKey(){
-  return process.env.resPrivateKey
-}
+/*function getPrivateKey(){
+  return await rpc.getPrivKey(resAddress)
+}*/
 
 function getSharedSecret(theirPubKey, myPrivKey){
   var wif = require('wif')
