@@ -1,8 +1,6 @@
 // const { LocalStorage } = require('node-localstorage');
 const jsonfile = require('jsonfile');
 const io = require('socket.io-client');
-//const p2p = require("./p2p.js")
-const Peer = require("peerjs-nodejs")
 const os = require('os');
 const SNode = require('./SNodeTracker').auto();
 const pkg = require('./package.json');
@@ -10,7 +8,6 @@ const init = require('./init');
 const configuration = require('./config/config');
 var app = require('express')();
 var server = require('http').Server(app);
-var peer = new Peer('asdf', {host:'resnodetracker.tk', path:'/peerjs', port:443, secure:true})
 const listener = server.listen(3000, function() {
   console.log('Your app is listening on port ' + listener.address().port);
 });
