@@ -214,7 +214,7 @@ const sw = Swarm(config)
     const seq = connSeq
 
     const peerId = info.id.toString('hex')
-    log(`Connected #${seq} to peer: ${hex2ascii(peerId)}`)
+    log(`Connected #${seq} to peer: ${peerId}`)
 
     // Keep alive TCP connection with peer
     if (info.initiator) {
@@ -225,11 +225,11 @@ const sw = Swarm(config)
       }
     }
     var registration = await getRegistration()
-    var message = JSON.stringify({message: registration.message, signature: registration.signature})
+    var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
     send(message, conn)
     conn.on('data', data => {
       // Here we handle incomming messages
-      console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
+      //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
       //decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
       try{
         log(
@@ -253,12 +253,12 @@ const sw = Swarm(config)
     })
 
     // Save the connection
+    
     if (!peers[peerId]) {
       peers[peerId] = {}
     }
     peers[peerId].conn = conn
     peers[peerId].seq = seq
-    //peers[peerId].key = getPubKey(hex2ascii(peerId))
     connSeq++
 
   })
