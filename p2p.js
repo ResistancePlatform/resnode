@@ -109,7 +109,7 @@ function send(message, conn){
 
 async function validSignature(address, signature, message){
   try {
-    return await rpc.verifyMessage()
+    return await rpc.verifyMessage(address, signature, message)
   } catch (err) {
     console.log(err)
   }
@@ -127,7 +127,13 @@ async function getRegistration() {
 }
 
 async function apiHandler(req, conn, info){
-  req = JSON.parse(req)
+  var peerId = info.id.toString()
+  try{
+    req = JSON.parse(req)
+  } catch (error) {
+    console.log(error)
+    return
+  }
   const seq = connSeq
   if(!req.method){
     send(JSON.stringify({method: 'response', message: 'Error'}), conn)
@@ -145,10 +151,14 @@ async function apiHandler(req, conn, info){
       return
     }
     //var data = JSON.stringify({address: resAddress, publickey: resPublicKey.pubkey, timestamp:moment().valueOf()})
-    if(!validSignature(message.address, JSON.stringify(message), signature)){
-      send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}, conn))
+    console.log(peerId)
+    console.log(req.message)
+    console.log(signature)
+    console.log(await validSignature(peerId, req.message, signature))
+    if(!await validSignature(peerId, req.message, signature)){
+      send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
+      return
     }
-    var peerId = info.id.toString()
     if (!peers[peerId]) {
       peers[peerId] = {}
     }
@@ -215,9 +225,9 @@ const sw = Swarm(config)
         //log('exception', exception)
       }
     }
-    var registration = await getRegistration()
+    /*var registration = await getRegistration()
     var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-    send(message, conn)
+    send(message, conn)*/
     conn.on('data', async (data) => {
       // Here we handle incomming messages
       //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
@@ -240,9 +250,9 @@ const sw = Swarm(config)
       // Here we handle peer disconnection
       log(`Connection closed, peer id: ${peerId}`)
       // If the closing connection is the last connection with the peer, removes the peer
-      if (peers[peerId].seq === seq) {
+      /*if (peers[peerId].seq === seq) {
         delete peers[peerId]
-      }
+      }*/
     })
 
     // Save the connection
