@@ -204,7 +204,7 @@ const sw = Swarm(config)
   sw.on('connection', async (conn, info) => {
     // Connection id
 
-    const peerId = info.id.toString("hex")
+    const peerId = info.id
     log(`Connected  to peer: ${peerId}`)
 
     // Keep alive TCP connection with peer
