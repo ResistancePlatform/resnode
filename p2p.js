@@ -119,8 +119,8 @@ async function getRegistration() {
   var registration = {}
   var resAddress = await rpc.getPublicAddress()
   var resPublicKey = await rpc.getPublicKey(resAddress)
-  var data = JSON.stringify({address: resAddress, publickey: resPublicKey.pubkey, timestamp:moment().valueOf()})
-  var signature = await rpc.signMessage(resAddress, data)
+  var data = {address: resAddress, publickey: resPublicKey.pubkey, timestamp:moment().valueOf()}
+  var signature = await rpc.signMessage(resAddress, JSON.stringify(data))
   registration.message = data
   registration.signature = signature
   return registration
@@ -155,7 +155,7 @@ async function apiHandler(req, conn, info){
     console.log(req.message)
     console.log(signature)
     console.log(await validSignature(peerId, req.message, signature))
-    if(!await validSignature(peerId, req.message, signature)){
+    if(!await validSignature(req.message.address, req.signature, JSON.stringify(req.message)){
       send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
       return
     }
@@ -198,6 +198,12 @@ const config = defaults({
 const sw = Swarm(config)
 
 
+    var registration = await getRegistration()
+    var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
+    //console.log(message)
+    //console.log(registration)
+    //console.log(await validSignature(registration.message.address, registration.signature, JSON.stringify(registration.message)))
+    send(message, conn)
 
   // Choose a random unused port for listening TCP peer connections
   const port = await 12345 //getPort()
@@ -225,9 +231,9 @@ const sw = Swarm(config)
         //log('exception', exception)
       }
     }
-    /*var registration = await getRegistration()
-    var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-    send(message, conn)*/
+    //var registration = await getRegistration()
+    //var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
+    //send(message, conn)
     conn.on('data', async (data) => {
       // Here we handle incomming messages
       //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
