@@ -64,7 +64,7 @@ function log () {
   for (let i = 0, len = arguments.length; i < len; i++) {
     console.log(arguments[i])
   }
-  askUser()
+  //askUser()
 }
 
 function getPubKey(resAddress){
@@ -197,7 +197,7 @@ const sw = Swarm(config)
    */
   sw.join('resistance-channel')
 
-  sw.on('connection', (conn, info) => {
+  sw.on('connection', async (conn, info) => {
     // Connection id
     const seq = connSeq
 
@@ -220,7 +220,7 @@ const sw = Swarm(config)
       try{
         log(
           'Received Message from peer ' + hex2ascii(peerId),
-          '----encrypted--->' + data.toString(),
+          '----encrypted--->' + data.toString()
           //'----decrypted---> ' + decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
         )
       } catch (err) {
@@ -250,6 +250,6 @@ const sw = Swarm(config)
   })
 
   // Read user message from command line
-  askUser()  
+  //askUser()  
 
 })()
