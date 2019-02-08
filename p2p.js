@@ -93,12 +93,19 @@ function decrypt(text, secret){
 function sendAll(message){
   try{
     for (let id in peers){
-      peer[id].conn.write(message)
+      peers[id].conn.write(message)
     }
   } catch (err) {
       console.log(err)
   }
 }
+
+setInterval(async function() {
+  // method to be executed;
+  var registration = await getRegistration()
+  var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
+  sendAll(message)
+}, 5000);
 
 function send(message, conn){
   try {
@@ -229,9 +236,6 @@ const sw = Swarm(config)
         //log('exception', exception)
       }
     }
-    var registration = await getRegistration()
-    var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-    send(message, conn)
     conn.on('data', async (data) => {
       // Here we handle incomming messages
       //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
