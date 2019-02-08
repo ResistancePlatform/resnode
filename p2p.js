@@ -225,7 +225,7 @@ const sw = Swarm(config)
       }
     }
     var registration = getRegistration()
-    send(JSON.strigify({message: registration.message, signature: registration.signature}), conn)
+    send(JSON.stringify({message: registration.message, signature: registration.signature}), conn)
     conn.on('data', data => {
       // Here we handle incomming messages
       console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
