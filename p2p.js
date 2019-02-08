@@ -28,14 +28,7 @@ const peers = {}
 let connSeq = 0
 var myId = ""
 
-async function register(resAddress, resPublicKey) {
-  var registration = JSON.stringify({address: resAddress, publickey: resPublicKey, timestamp:moment().valueOf()})
-  var signature = await rpc.signMessage(resAddress, registration)
-  console.log("Signature: " + signature)
-  //console.log(await rpc.verifyMessage(await rpc.getPublicAddress(), signature, message))
-}
-
-;(async () => {
+/*;(async () => {
     try {
       // Peer Identity, a random hash for identify your peer
       console.log("starting")
@@ -46,7 +39,7 @@ async function register(resAddress, resPublicKey) {
     } catch (e) {
         console.log(e)
     }
-})();
+})();*/
 
 //process.exit(0)
 
@@ -135,6 +128,29 @@ function send(message, conn){
   }
 }
 
+async function validSignature(address, signature, message){
+  try {
+    return await rpc.verifyMessage()
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+async function getRegistration() {
+  registration = {}
+  var resAddress = await rpc.getPublicAddress()
+  myId = Buffer.from(resAddress, "utf-8") //crypto.randomBytes(32)
+  console.log('Your identity: ' + myId)
+  //console.log(await register(resAddress, await rpc.getPublicKey(resAddress)))
+  var registration = JSON.stringify({address: resAddress, publickey: resPublicKey, timestamp:moment().valueOf()})
+  var signature = await rpc.signMessage(resAddress, registration)
+  registration.message = registration
+  registration.signature = signature
+  return signature
+  //console.log("Signature: " + signature)
+  //console.log(await rpc.verifyMessage(await rpc.getPublicAddress(), signature, message))
+}
+
 /*
 * Function to get text input from user and send it to other peers
 * Like a chat :)
@@ -187,6 +203,8 @@ const sw = Swarm(config)
 
   // Choose a random unused port for listening TCP peer connections
   const port = await 12345 //getPort()
+
+  console.log(getRegistration())
 
   sw.listen(port)
   console.log('Listening to port: ' + port)
