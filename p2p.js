@@ -224,8 +224,9 @@ const sw = Swarm(config)
         log('exception', exception)
       }
     }
-    var registration = getRegistration()
-    send(JSON.stringify({message: registration.message, signature: registration.signature}), conn)
+    var registration = await getRegistration()
+    var message = JSON.stringify({message: registration.message, signature: registration.signature})
+    send(message, conn)
     conn.on('data', data => {
       // Here we handle incomming messages
       console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
