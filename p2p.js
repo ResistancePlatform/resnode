@@ -28,18 +28,15 @@ const peers = {}
 let connSeq = 0
 var myId = ""
 
-/*;(async () => {
+;(async () => {
     try {
       // Peer Identity, a random hash for identify your peer
-      console.log("starting")
       var resAddress = await rpc.getPublicAddress()
       myId = Buffer.from(resAddress, "utf-8") //crypto.randomBytes(32)
-      console.log('Your identity: ' + myId)
-      console.log(await register(resAddress, await rpc.getPublicKey(resAddress)))
     } catch (e) {
         console.log(e)
     }
-})();*/
+})();
 
 //process.exit(0)
 
