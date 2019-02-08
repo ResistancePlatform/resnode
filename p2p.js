@@ -161,7 +161,7 @@ async function apiHandler(req, conn, info){
     peers[peerId].conn = conn
     peers[peerId].seq = seq
     connSeq++    
-    send(JSON.stringify({method: 'response', message: 'Registration Successful'}))
+    send(JSON.stringify({method: 'response', message: 'Registration Successful'}), conn)
     return
   }
 
