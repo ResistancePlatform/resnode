@@ -215,11 +215,11 @@ const sw = Swarm(config)
     send("{message: hello}", conn)
     conn.on('data', data => {
       // Here we handle incomming messages
-      console.log("PEER ID: " + getPubKey(hex2ascii(peerId)))//getPubKey(hex2ascii(peerId)[0]))
+      console.log("PEER ID: " + getPubKey(peerId)//getPubKey(hex2ascii(peerId)[0]))
       //decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
       try{
         log(
-          'Received Message from peer ' + hex2ascii(peerId),
+          'Received Message from peer ' + peerId,
           '----encrypted--->' + data.toString()
           //'----decrypted---> ' + decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
         )
