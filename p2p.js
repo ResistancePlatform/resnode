@@ -217,6 +217,7 @@ const sw = Swarm(config)
     // Connection id
 
     const peerId = info.id
+    const seq = connSeq
     log(`Connected  to peer: ${peerId}`)
 
     // Keep alive TCP connection with peer
@@ -227,9 +228,9 @@ const sw = Swarm(config)
         //log('exception', exception)
       }
     }
-    //var registration = await getRegistration()
-    //var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-    //send(message, conn)
+    var registration = await getRegistration()
+    var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
+    send(message, conn)
     conn.on('data', async (data) => {
       // Here we handle incomming messages
       //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
@@ -252,9 +253,9 @@ const sw = Swarm(config)
       // Here we handle peer disconnection
       log(`Connection closed, peer id: ${peerId}`)
       // If the closing connection is the last connection with the peer, removes the peer
-      /*if (peers[peerId].seq === seq) {
+      if (peers[peerId].seq === seq) {
         delete peers[peerId]
-      }*/
+      }
     })
 
     // Save the connection
