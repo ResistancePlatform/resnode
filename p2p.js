@@ -55,7 +55,7 @@ let rl
 /**
  * Function for safely call console.log with readline interface active
  */
-function log () {
+/*function log () {
   if (rl) {
     rl.clearLine()    
     rl.close()
@@ -64,8 +64,8 @@ function log () {
   for (let i = 0, len = arguments.length; i < len; i++) {
     console.log(arguments[i])
   }
-  askUser()
-}
+  //askUser()
+}*/
 
 function getPubKey(resAddress){
   var registry = {'rpASwRhtkdxE7xKXrccNjwRCufMkQznDaYK':'02100fc2cdb0818ee535ca508f3d316d519cd4cb64eef45a8a57e878d004ffd397','rpLi4fC8Lq88KMf22VCHefV4zqw1XTharah':'03d7ff1f3753fcf3e3f05839d456cfac2e270158771882420ddd23851b3b380aca'}
@@ -197,7 +197,7 @@ const sw = Swarm(config)
    */
   sw.join('resistance-channel')
 
-  sw.on('connection', (conn, info) => {
+  sw.on('connection', async(conn, info) => {
     // Connection id
     const seq = connSeq
 
@@ -220,7 +220,7 @@ const sw = Swarm(config)
       try{
         log(
           'Received Message from peer ' + hex2ascii(peerId),
-          '----encrypted--->' + data.toString(),
+          '----encrypted--->' + data.toString()
           //'----decrypted---> ' + decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
         )
       } catch (err) {
@@ -250,6 +250,6 @@ const sw = Swarm(config)
   })
 
   // Read user message from command line
-  askUser()  
+  //askUser()  
 
 })()
