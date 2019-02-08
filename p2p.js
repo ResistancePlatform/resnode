@@ -7,36 +7,11 @@ const hex2ascii = require('hex2ascii')
 const moment = require('moment')
 const RpcClient = require('./resistancerpc.js')
 
-/*if(!process.env.resPrivateKey){
-  console.log("You need to set the resPrivateKey env variable")
-  process.exit()
-}
-
-if(!process.env.resAddress){
-  console.log("You need to set the resAddress env variable")
-  process.exit()
-}*/
-
 
 /**
  * Here we will save our TCP peer connections
  * using the peer id as key: { peer_id: TCP_Connection }
  */
-var rpc = new RpcClient()
-const peers = {}
-// Counter for connections, used for identify connections
-let connSeq = 0
-var myId = ""
-
-;(async () => {
-    try {
-      // Peer Identity, a random hash for identify your peer
-      var resAddress = await rpc.getPublicAddress()
-      myId = resAddress//Buffer.from(resAddress, "utf-8") //crypto.randomBytes(32)
-    } catch (e) {
-        console.log(e)
-    }
-})();
 
 //process.exit(0)
 
@@ -179,42 +154,27 @@ async function apiHandler(req, conn, info){
 
 }
 
-/*
-* Function to get text input from user and send it to other peers
-* Like a chat :)
-*/
-/*const askUser = async () => {
-  rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  })
-
-  rl.question('Send message: ', message => {
-    // Broadcast to peers
-    try {
-      var theirPubKey = getPubKey(message.split(":")[0])
-      var text = message.split(":")[1]
-      message = encrypt(text, getSharedSecret(theirPubKey,getPrivateKey()))
-      for (let id in peers) {
-        peers[id].conn.write(message)
-      }
-      rl.close()
-      rl = undefined
-      askUser()
-    } catch (err) {
-      console.log(err)
-      console.log("There was an error sending your message. Please make sure everything is set properly")
-      rl.close()
-      rl = undefined
-      askUser()
-    }
-  });
-}*/
-
 /** 
  * Default DNS and DHT servers
  * This servers are used for peer discovery and establishing connection
  */
+;(async () => {
+
+var rpc = new RpcClient()
+const peers = {}
+// Counter for connections, used for identify connections
+let connSeq = 0
+var myId = ""
+
+try {
+// Peer Identity, a random hash for identify your peer
+  var resAddress = await rpc.getPublicAddress()
+  myId = resAddress//Buffer.from(resAddress, "utf-8") //crypto.randomBytes(32)
+  console.log(resAddress)
+} catch (e) {
+  console.log(e)
+}
+
 const config = defaults({
   // peer-id
   id: myId,
@@ -224,10 +184,10 @@ const config = defaults({
  * discovery-swarm library establishes a TCP p2p connection and uses
  * discovery-channel library for peer discovery
  */
+console.log(config)
 const sw = Swarm(config)
 
 
-;(async () => {
 
   // Choose a random unused port for listening TCP peer connections
   const port = await 12345 //getPort()
@@ -244,7 +204,7 @@ const sw = Swarm(config)
   sw.on('connection', async (conn, info) => {
     // Connection id
 
-    const peerId = info.id.toString()
+    const peerId = info.id.toString("hex")
     log(`Connected  to peer: ${peerId}`)
 
     // Keep alive TCP connection with peer
@@ -255,9 +215,9 @@ const sw = Swarm(config)
         //log('exception', exception)
       }
     }
-    /*var registration = await getRegistration()
+    var registration = await getRegistration()
     var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-    send(message, conn)*/
+    send(message, conn)
     conn.on('data', async (data) => {
       // Here we handle incomming messages
       //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
