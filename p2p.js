@@ -8,6 +8,13 @@ const moment = require('moment')
 const RpcClient = require('./resistancerpc.js')
 
 
+var rpc = new RpcClient()
+
+const peers = {}
+// Counter for connections, used for identify connections
+let connSeq = 0
+var myId = ""
+
 /**
  * Here we will save our TCP peer connections
  * using the peer id as key: { peer_id: TCP_Connection }
@@ -160,12 +167,6 @@ async function apiHandler(req, conn, info){
  */
 ;(async () => {
 
-var rpc = new RpcClient()
-const peers = {}
-// Counter for connections, used for identify connections
-let connSeq = 0
-var myId = ""
-
 try {
 // Peer Identity, a random hash for identify your peer
   var resAddress = await rpc.getPublicAddress()
@@ -184,7 +185,6 @@ const config = defaults({
  * discovery-swarm library establishes a TCP p2p connection and uses
  * discovery-channel library for peer discovery
  */
-console.log(config)
 const sw = Swarm(config)
 
 
