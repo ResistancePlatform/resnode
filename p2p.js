@@ -200,9 +200,6 @@ const sw = Swarm(config)
   // Choose a random unused port for listening TCP peer connections
   const port = await 12345 //getPort()
 
-  console.log(registration.message)
-  console.log(registration.signature)
-
   sw.listen(port)
   console.log('Listening to port: ' + port)
 
