@@ -197,7 +197,7 @@ const sw = Swarm(config)
    */
   sw.join('resistance-channel')
 
-  sw.on('connection', async(conn, info) => {
+  sw.on('connection', async (conn, info) => {
     // Connection id
     const seq = connSeq
 
