@@ -137,18 +137,14 @@ async function validSignature(address, signature, message){
 }
 
 async function getRegistration() {
-  registration = {}
+  var registration = {}
   var resAddress = await rpc.getPublicAddress()
-  myId = Buffer.from(resAddress, "utf-8") //crypto.randomBytes(32)
-  console.log('Your identity: ' + myId)
-  //console.log(await register(resAddress, await rpc.getPublicKey(resAddress)))
-  var registration = JSON.stringify({address: resAddress, publickey: resPublicKey, timestamp:moment().valueOf()})
-  var signature = await rpc.signMessage(resAddress, registration)
-  registration.message = registration
+  var resPublicKey = await rpc.getPublicKey(resAddress)
+  var data = JSON.stringify({address: resAddress, publickey: resPublicKey.pubkey, timestamp:moment().valueOf()})
+  var signature = await rpc.signMessage(resAddress, data)
+  registration.message = data
   registration.signature = signature
-  return signature
-  //console.log("Signature: " + signature)
-  //console.log(await rpc.verifyMessage(await rpc.getPublicAddress(), signature, message))
+  return registration
 }
 
 /*
@@ -204,7 +200,8 @@ const sw = Swarm(config)
   // Choose a random unused port for listening TCP peer connections
   const port = await 12345 //getPort()
 
-  console.log(getRegistration())
+  console.log(registration.message)
+  console.log(registration.signature)
 
   sw.listen(port)
   console.log('Listening to port: ' + port)
@@ -215,7 +212,7 @@ const sw = Swarm(config)
    */
   sw.join('resistance-channel')
 
-  sw.on('connection', (conn, info) => {
+  sw.on('connection', async (conn, info) => {
     // Connection id
     const seq = connSeq
 
@@ -230,7 +227,8 @@ const sw = Swarm(config)
         log('exception', exception)
       }
     }
-    send("{message: hello}", conn)
+    var registration = getRegistration()
+    send(JSON.strigify({message: registration.message, signature: registration.signature}), conn)
     conn.on('data', data => {
       // Here we handle incomming messages
       console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
