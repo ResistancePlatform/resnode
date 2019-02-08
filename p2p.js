@@ -32,7 +32,7 @@ var myId = ""
     try {
       // Peer Identity, a random hash for identify your peer
       var resAddress = await rpc.getPublicAddress()
-      myId = Buffer.from(resAddress, "utf-8") //crypto.randomBytes(32)
+      myId = resAddress//Buffer.from(resAddress, "utf-8") //crypto.randomBytes(32)
     } catch (e) {
         console.log(e)
     }
@@ -144,6 +144,41 @@ async function getRegistration() {
   return registration
 }
 
+async function apiHandler(req, conn, info){
+  req = JSON.parse(req)
+  const seq = connSeq
+  if(!req.method){
+    send(JSON.stringify({method: 'response', message: 'Error'}), conn)
+    return //"Error: Method not specified"
+  } else if(req.method == 'response'){
+    console.log(req)
+    return
+  } else if(req.method == 'register'){
+    //var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
+    var message = req.message
+    var signature = req.signature
+    
+    if(!message || !signature){
+      send(JSON.stringify({method: 'response', message: 'Error'}, conn))
+      return
+    }
+    //var data = JSON.stringify({address: resAddress, publickey: resPublicKey.pubkey, timestamp:moment().valueOf()})
+    if(!validSignature(message.address, JSON.stringify(message), signature)){
+      send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}, conn))
+    }
+    var peerId = info.id.toString()
+    if (!peers[peerId]) {
+      peers[peerId] = {}
+    }
+    peers[peerId].conn = conn
+    peers[peerId].seq = seq
+    connSeq++    
+    send(JSON.stringify({method: 'response', message: 'Registration Successful'}))
+    return
+  }
+
+}
+
 /*
 * Function to get text input from user and send it to other peers
 * Like a chat :)
@@ -208,32 +243,33 @@ const sw = Swarm(config)
 
   sw.on('connection', async (conn, info) => {
     // Connection id
-    const seq = connSeq
 
-    const peerId = info.id.toString('hex')
-    log(`Connected #${seq} to peer: ${peerId}`)
+    const peerId = info.id.toString()
+    log(`Connected  to peer: ${peerId}`)
 
     // Keep alive TCP connection with peer
     if (info.initiator) {
       try {
         conn.setKeepAlive(true, 600)
       } catch (exception) {
-        log('exception', exception)
+        //log('exception', exception)
       }
     }
-    var registration = await getRegistration()
+    /*var registration = await getRegistration()
     var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-    send(message, conn)
-    conn.on('data', data => {
+    send(message, conn)*/
+    conn.on('data', async (data) => {
       // Here we handle incomming messages
       //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
       //decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
       try{
-        log(
+	console.log(await apiHandler(data.toString(), conn, info))
+	//send(JSON.stringify({method: 'response', message: 'Error'}), conn)
+        /*log(
           'Received Message from peer ' + peerId,
           '----encrypted--->' + data.toString()
           //'----decrypted---> ' + decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
-        )
+        )*/
       } catch (err) {
         console.log(err)
         console.log("Received a bad or corrupt message.")
@@ -242,7 +278,7 @@ const sw = Swarm(config)
 
     conn.on('close', () => {
       // Here we handle peer disconnection
-      log(`Connection ${seq} closed, peer id: ${peerId}`)
+      log(`Connection closed, peer id: ${peerId}`)
       // If the closing connection is the last connection with the peer, removes the peer
       if (peers[peerId].seq === seq) {
         delete peers[peerId]
@@ -251,12 +287,12 @@ const sw = Swarm(config)
 
     // Save the connection
     
-    if (!peers[peerId]) {
+    /*if (!peers[peerId]) {
       peers[peerId] = {}
     }
     peers[peerId].conn = conn
     peers[peerId].seq = seq
-    connSeq++
+    connSeq++*/
 
   })
 
