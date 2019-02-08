@@ -151,11 +151,7 @@ async function apiHandler(req, conn, info){
       return
     }
     //var data = JSON.stringify({address: resAddress, publickey: resPublicKey.pubkey, timestamp:moment().valueOf()})
-    console.log(peerId)
-    console.log(req.message)
-    console.log(signature)
-    console.log(await validSignature(peerId, req.message, signature))
-    if(!await validSignature(req.message.address, req.signature, JSON.stringify(req.message)){
+    if(!await validSignature(req.message.address, req.signature, JSON.stringify(req.message))){
       send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
       return
     }
@@ -198,12 +194,12 @@ const config = defaults({
 const sw = Swarm(config)
 
 
-    var registration = await getRegistration()
-    var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
+   // var registration = await getRegistration()
+   // var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
     //console.log(message)
     //console.log(registration)
     //console.log(await validSignature(registration.message.address, registration.signature, JSON.stringify(registration.message)))
-    send(message, conn)
+    //send(message, conn)
 
   // Choose a random unused port for listening TCP peer connections
   const port = await 12345 //getPort()
