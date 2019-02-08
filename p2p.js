@@ -117,11 +117,29 @@ function decrypt(text, secret){
 
   return decrypted.toString();
 }
+
+async function sendAll(message){
+  try{
+    for (let id in peers){
+      peer[id].conn.write(message)
+    }
+  } catch (err) {
+      console.log(err)
+  }
+}
+
+async function send(message, peer){
+  try {
+    peer.conn.write(message)
+  } catch (err) {
+  }
+}
+
 /*
 * Function to get text input from user and send it to other peers
 * Like a chat :)
 */
-const askUser = async () => {
+/*const askUser = async () => {
   rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -147,7 +165,7 @@ const askUser = async () => {
       askUser()
     }
   });
-}
+}*/
 
 /** 
  * Default DNS and DHT servers
@@ -168,7 +186,7 @@ const sw = Swarm(config)
 ;(async () => {
 
   // Choose a random unused port for listening TCP peer connections
-  const port = await getPort()
+  const port = await 12345 //getPort()
 
   sw.listen(port)
   console.log('Listening to port: ' + port)
@@ -194,7 +212,7 @@ const sw = Swarm(config)
         log('exception', exception)
       }
     }
-
+    await sendMessage("{message: hello}", conn)
     conn.on('data', data => {
       // Here we handle incomming messages
       console.log("PEER ID: " + getPubKey(hex2ascii(peerId)))//getPubKey(hex2ascii(peerId)[0]))
@@ -203,7 +221,7 @@ const sw = Swarm(config)
         log(
           'Received Message from peer ' + hex2ascii(peerId),
           '----encrypted--->' + data.toString(),
-          '----decrypted---> ' + decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
+          //'----decrypted---> ' + decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
         )
       } catch (err) {
         console.log(err)
