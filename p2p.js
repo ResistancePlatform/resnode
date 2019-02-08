@@ -128,9 +128,9 @@ function sendAll(message){
   }
 }
 
-function send(message, peer){
+function send(message, conn){
   try {
-    peer.conn.write(message)
+    conn.write(message)
   } catch (err) {
   }
 }
