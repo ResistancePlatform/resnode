@@ -155,12 +155,13 @@ async function apiHandler(req, conn, info){
       send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
       return
     }
-    if (!peers[peerId]) {
+    /*if (!peers[peerId]) {
       peers[peerId] = {}
     }
     peers[peerId].conn = conn
     peers[peerId].seq = seq
-    connSeq++    
+    console.log(`Sequence: ${seq}`)
+    connSeq++*/
     send(JSON.stringify({method: 'response', message: 'Registration Successful'}), conn)
     return
   }
@@ -260,12 +261,12 @@ const sw = Swarm(config)
 
     // Save the connection
     
-    /*if (!peers[peerId]) {
+    if (!peers[peerId]) {
       peers[peerId] = {}
     }
     peers[peerId].conn = conn
     peers[peerId].seq = seq
-    connSeq++*/
+    connSeq++
 
   })
 
