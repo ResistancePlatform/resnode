@@ -55,7 +55,7 @@ let rl
 /**
  * Function for safely call console.log with readline interface active
  */
-/*function log () {
+function log () {
   if (rl) {
     rl.clearLine()    
     rl.close()
@@ -65,7 +65,7 @@ let rl
     console.log(arguments[i])
   }
   //askUser()
-}*/
+}
 
 function getPubKey(resAddress){
   var registry = {'rpASwRhtkdxE7xKXrccNjwRCufMkQznDaYK':'02100fc2cdb0818ee535ca508f3d316d519cd4cb64eef45a8a57e878d004ffd397','rpLi4fC8Lq88KMf22VCHefV4zqw1XTharah':'03d7ff1f3753fcf3e3f05839d456cfac2e270158771882420ddd23851b3b380aca'}
@@ -118,7 +118,7 @@ function decrypt(text, secret){
   return decrypted.toString();
 }
 
-async function sendAll(message){
+function sendAll(message){
   try{
     for (let id in peers){
       peer[id].conn.write(message)
@@ -128,7 +128,7 @@ async function sendAll(message){
   }
 }
 
-async function send(message, peer){
+function send(message, peer){
   try {
     peer.conn.write(message)
   } catch (err) {
@@ -197,7 +197,7 @@ const sw = Swarm(config)
    */
   sw.join('resistance-channel')
 
-  sw.on('connection', async (conn, info) => {
+  sw.on('connection', (conn, info) => {
     // Connection id
     const seq = connSeq
 
@@ -212,7 +212,7 @@ const sw = Swarm(config)
         log('exception', exception)
       }
     }
-    await sendMessage("{message: hello}", conn)
+    send("{message: hello}", conn)
     conn.on('data', data => {
       // Here we handle incomming messages
       console.log("PEER ID: " + getPubKey(hex2ascii(peerId)))//getPubKey(hex2ascii(peerId)[0]))
