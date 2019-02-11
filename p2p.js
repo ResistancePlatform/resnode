@@ -169,7 +169,7 @@ class P2P {
     var address = await this.rpc.getPublicAddress()
     var resPublicKey = await this.rpc.getPublicKey(address)
     var data = {address: address, publickey: resPublicKey.pubkey, timestamp:moment().valueOf()}
-    var signature = await this.rpc.signMessage(resAddress, JSON.stringify(data))
+    var signature = await this.rpc.signMessage(this.resAddress, JSON.stringify(data))
     registration.message = data
     registration.signature = signature
     return registration
@@ -212,7 +212,7 @@ class P2P {
         console.log(req)
         break
       case "register":
-       handleRegistration(req, conn)
+       this.handleRegistration(req, conn)
        break
       default:
        send(JSON.stringify({method: 'response', message: 'Error: Invalid value for parameter method'}), conn)
