@@ -207,7 +207,6 @@ class P2P {
       return
     }
     this.peers[req.message.address].registered = true
-    console.log("Making Registered True")
     await this.send(JSON.stringify({method: 'response', message: 'Registration Successful'}), conn)
     return
 
@@ -223,8 +222,6 @@ class P2P {
     }
 
     const seq = this.connSeq
-    console.log("Message Received")
-    console.log(req)
 
     switch(req.method){
       case "response":
