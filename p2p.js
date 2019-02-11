@@ -15,14 +15,6 @@ class P2P {
   }
 
   async init(){
-    //for testing only
-    setInterval(async function() {
-      // method to be executed;
-      var registration = await this.getRegistration()
-      var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-      this.sendAll(message)
-    }, 5000);
-
     try {
     // Peer Identity, a random hash for identify your peer
       this.resAddress = await this.rpc.getPublicAddress()
