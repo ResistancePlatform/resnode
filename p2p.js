@@ -59,7 +59,7 @@ class P2P {
       // Connection id
 
       const peerId = info.id
-      const seq = connSeq
+      const seq = this.connSeq
       console.log(`Connected  to peer: ${peerId}`)
 
       // Keep alive TCP connection with peer
@@ -102,7 +102,7 @@ class P2P {
       }
       this.peers[peerId].conn = conn
       this.peers[peerId].seq = seq
-      connSeq++
+      this.connSeq++
 
     })
   }
