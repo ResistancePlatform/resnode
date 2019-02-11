@@ -14,7 +14,7 @@ class P2P {
     this.peers = {}
     this.connSeq = 0
     this.wlips = []
-    this.nodes = ["resnode.tk", "resnode2.tk"]
+    this.nodes = ["resnode2.tk"]
   }
 
   async init(){
@@ -233,10 +233,16 @@ class P2P {
         console.log(req)
         break
       case "register":
-       this.handleRegistration(req, conn)
-       break
+        this.handleRegistration(req, conn)
+        break
+      case "requestRegistration":
+        var registration = this.getRegistration()
+        var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
+        p2p.send(message, conn)
+        break
       default:
        send(JSON.stringify({method: 'response', message: 'Error: Invalid value for parameter method'}), conn)
+       break
     }
     return
   }
