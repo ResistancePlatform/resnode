@@ -257,10 +257,10 @@ class P2P {
         var registration = await this.getRegistration()
         var message = {method: "register", message: registration.message, signature: registration.signature}
         //console.log(conn)
-	await this.signAndsend(message, conn)
+	await this.signAndSend(message, conn)
         break
       default:
-       await this.signAndsend({method: 'response', message: 'Error: Invalid value for parameter method'}, conn)
+       await this.signAndSend({method: 'response', message: 'Error: Invalid value for parameter method'}, conn)
        break
     }
     return
