@@ -212,7 +212,7 @@ class P2P {
 
   async apiHandler(req, conn, info){
     var peerId = info.id.toString()
-    console.log(req) 
+    //console.log(req) 
     try{
       req = JSON.parse(req)
     } catch (error) {
@@ -220,8 +220,8 @@ class P2P {
       return
     }
 
-    console.log(req.signature)
-    console.log(req.message)
+    //console.log(req.signature)
+    //console.log(req.message)
     //check required parameters
     if(!req.signature || !req.message){
       console.log("Message missing signature or message")
@@ -232,7 +232,7 @@ class P2P {
     try {
       var validSignature = await this.validSignature(peerId, req.signature, JSON.stringify(req.message))
       if(!validSignature){
-	console.log("Invalid Signature")
+	console.log("Invalid Signature, Ignoring Request")
         return
       }
     }
@@ -241,7 +241,7 @@ class P2P {
       return
     }
 
-    console.log("Received Message with Valid Signature")
+    //console.log("Received Message with Valid Signature")
     const seq = this.connSeq
 
     switch(req.message.method){
