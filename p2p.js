@@ -107,9 +107,11 @@ class P2P {
       if (!this.peers[peerId]) {
         this.peers[peerId] = {}
       }
-      this.peers[peerId].conn = conn
-      this.peers[peerId].seq = seq
-      this.connSeq++
+      if(peerId.charAt(0) == 'r'){
+	this.peers[peerId].conn = conn
+	this.peers[peerId].seq = seq
+	this.connSeq++
+      }
 
     })
   }
