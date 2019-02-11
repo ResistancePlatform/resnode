@@ -59,7 +59,7 @@ class P2P {
      * The channel we are connecting to.
      * Peers should discover other peers in this channel
      */
-    sw.join('resistance-channel')
+    sw.join('resistance-channel-asdfasdfasdf')
 
     sw.on('connection', async (conn, info) => {
       // Connection id
@@ -69,12 +69,13 @@ class P2P {
       console.log(`Connected  to peer: ${peerId}`)
 
       // Keep alive TCP connection with peer
-      if (info.initiator) {
+      /*if (info.initiator) {
         try {
           conn.setKeepAlive(true, 600)
         } catch (exception) {
+	  console.log(exception)
         }
-      }
+      }*/
       conn.on('data', async (data) => {
         // Here we handle incomming messages
         //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
@@ -206,6 +207,7 @@ class P2P {
       return
     }
     this.peers[req.message.address].registered = true
+    console.log("Making Registered True")
     this.send(JSON.stringify({method: 'response', message: 'Registration Successful'}), conn)
     return
 
@@ -221,6 +223,8 @@ class P2P {
     }
 
     const seq = this.connSeq
+    console.log("Message Received")
+    console.log(req)
 
     switch(req.method){
       case "response":
