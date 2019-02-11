@@ -156,7 +156,7 @@ class P2P {
     return decrypted.toString();
   }
 
-  sendAll(message){
+  async sendAll(message){
     try{
       for (let id in this.peers){
         this.peers[id].conn.write(message)
@@ -166,13 +166,14 @@ class P2P {
     }
   }
 
-  send(message, conn){
+  async send(message, conn){
     try {
       conn.write(message)
     } catch (err) {
       console.log(err)
     }
   }
+
   async validSignature(address, signature, message){
     try {
       return await this.rpc.verifyMessage(address, signature, message)
@@ -197,20 +198,20 @@ class P2P {
     var signature = req.signature
 
     if(!message){
-      this.send(JSON.stringify({method: 'response', message: 'Error: Missing Parameter message'}, conn))
+      await this.send(JSON.stringify({method: 'response', message: 'Error: Missing Parameter message'}, conn))
       return
     }
     if(!signature){
-      this.send(JSON.stringify({method: 'response', message: 'Error: Missing Parameter signature'}, conn))
+      await this.send(JSON.stringify({method: 'response', message: 'Error: Missing Parameter signature'}, conn))
       return
     }
     if(!await this.validSignature(req.message.address, req.signature, JSON.stringify(req.message))){
-      this.send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
+      await this.send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
       return
     }
     this.peers[req.message.address].registered = true
     console.log("Making Registered True")
-    this.send(JSON.stringify({method: 'response', message: 'Registration Successful'}), conn)
+    await this.send(JSON.stringify({method: 'response', message: 'Registration Successful'}), conn)
     return
 
   }
@@ -242,7 +243,7 @@ class P2P {
 	this.send(message, this.peers[req.address].conn)
         break*/
       default:
-       this.send(JSON.stringify({method: 'response', message: 'Error: Invalid value for parameter method'}), conn)
+       await this.send(JSON.stringify({method: 'response', message: 'Error: Invalid value for parameter method'}), conn)
        break
     }
     return
