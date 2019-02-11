@@ -233,12 +233,12 @@ class P2P {
       case "register":
         await this.handleRegistration(req, conn)
         break
-      /*case "requestRegistration":
-        var registration = this.getRegistration()
+      case "requestRegistration":
+        var registration = await this.getRegistration()
         var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
         //console.log(conn)
-	this.send(message, this.peers[req.address].conn)
-        break*/
+	await this.send(message, conn)
+        break
       default:
        await this.send(JSON.stringify({method: 'response', message: 'Error: Invalid value for parameter method'}), conn)
        break
