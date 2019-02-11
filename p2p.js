@@ -81,7 +81,9 @@ class P2P {
         //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
         //decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
         try{
-          await this.apiHandler(data.toString(), conn, info)
+          if(this.peers[peerId]){
+            await this.apiHandler(data.toString(), conn, info)
+	  }
           /*log(
             'Received Message from peer ' + peerId,
             '----encrypted--->' + data.toString()
@@ -109,8 +111,8 @@ class P2P {
         }
 	this.peers[peerId].conn = conn
 	this.peers[peerId].seq = seq
-	this.connSeq++
       }
+      this.connSeq++
     })
   }
 
