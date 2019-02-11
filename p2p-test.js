@@ -3,17 +3,10 @@ let P2P = require("./p2p.js")
 let p2p = new P2P()
 p2p.init()
 
-//for testing only
+//Wait for connections and run pings every 5 seconds
 setInterval(async function() {
-  // method to be executed;
   var peers = p2p.peers
-  //var registration = await p2p.getRegistration()
-  //var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-  //var message = JSON.stringify({method: "requestRegistration"})
   for(var peer in peers){
-    await p2p.signAndSend({method:'ping'}, peers[peer].conn)
-    //if(!peers[peer].registered){
-      //await p2p.send(message, peers[peer].conn)
-    //}
+    await p2p.ping(peers[peer].conn)
   }
 }, 5000, p2p);

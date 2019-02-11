@@ -64,7 +64,7 @@ class P2P {
     sw.on('connection', async (conn, info) => {
       // Connection id
 
-      const peerId = info.id
+      const peerId = info.id.toString()
       const seq = this.connSeq
       console.log(`Connected  to peer: ${peerId}`)
 
@@ -103,13 +103,14 @@ class P2P {
       })
 
       // Save the connection
-        
-      if (!this.peers[peerId]) {
-        this.peers[peerId] = {}
-      }
+      if(peerId.substring(0,1) == 'r'){ 
+        if (!this.peers[peerId]) {
+          this.peers[peerId] = {}
+        }
 	this.peers[peerId].conn = conn
 	this.peers[peerId].seq = seq
 	this.connSeq++
+      }
     })
   }
 
@@ -278,6 +279,9 @@ class P2P {
        break
     }
     return
+  }
+  async ping(conn){
+    await this.signAndSend({method:'ping'}, conn)
   }
 }
 // Counter for connections, used for identify connections
