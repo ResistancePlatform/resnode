@@ -238,7 +238,7 @@ class P2P {
       case "requestRegistration":
         var registration = this.getRegistration()
         var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-        p2p.send(message, conn)
+        this.send(message, conn)
         break
       default:
        send(JSON.stringify({method: 'response', message: 'Error: Invalid value for parameter method'}), conn)
