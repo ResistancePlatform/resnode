@@ -187,7 +187,7 @@ class P2P {
       this.send(JSON.stringify({method: 'response', message: 'Error: Missing Parameter signature'}, conn))
       return
     }
-    if(!await validSignature(req.message.address, req.signature, JSON.stringify(req.message))){
+    if(!await this.validSignature(req.message.address, req.signature, JSON.stringify(req.message))){
       this.send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
       return
     }
