@@ -7,9 +7,9 @@ p2p.init()
 setInterval(async function() {
   // method to be executed;
   var peers = p2p.peers
-  var registration = await p2p.getRegistration()
-  var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-  var message = JSON.stringify({method: "requestRegistration"})
+  //var registration = await p2p.getRegistration()
+  //var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
+  //var message = JSON.stringify({method: "requestRegistration"})
   for(var peer in peers){
     await p2p.signAndSend({method:'ping'}, peers[peer].conn)
     //if(!peers[peer].registered){

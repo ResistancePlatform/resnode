@@ -177,7 +177,7 @@ class P2P {
       var signature = await this.rpc.signMessage(this.resAddress, JSON.stringify(message))
       data.signature = signature
       data.message = message
-      conn.write(data)
+      conn.write(JSON.stringify(data))
     } catch (err) {
       console.log(err)
     }
@@ -226,13 +226,13 @@ class P2P {
 
   async apiHandler(req, conn, info){
     var peerId = info.id.toString()
+    console.log(req) 
     try{
       req = JSON.parse(req)
     } catch (error) {
       console.log(error)
       return
     }
-    
     //check required parameters
     if(!req.signature || !req.message){
       console.log("Message missing signature or message")
