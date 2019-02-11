@@ -205,23 +205,9 @@ class P2P {
   async handleRegistration(req, conn){
     var message = req.message
     var signature = req.signature
-
-    if(!message){
-      await this.send(JSON.stringify({method: 'response', message: 'Error: Missing Parameter message'}, conn))
-      return
-    }
-    if(!signature){
-      await this.send(JSON.stringify({method: 'response', message: 'Error: Missing Parameter signature'}, conn))
-      return
-    }
-    if(!await this.validSignature(req.message.address, req.signature, JSON.stringify(req.message))){
-      await this.send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
-      return
-    }
     this.peers[req.message.address].registered = true
-    await this.send(JSON.stringify({method: 'response', message: 'Registration Successful'}), conn)
+    await this.signAndsend({method: 'response', message: 'Registration Successful'}, conn)
     return
-
   }
 
   async apiHandler(req, conn, info){
@@ -233,17 +219,28 @@ class P2P {
       console.log(error)
       return
     }
+
+    console.log(req.signature)
+    console.log(req.message)
     //check required parameters
     if(!req.signature || !req.message){
       console.log("Message missing signature or message")
+      return
     }
     
     //check message signature
-    if(!await this.validSignature(peerId, req.signature, JSON.stringify(req.message))){
-      await this.send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
-      console.log("Invalid Signature")
+    try {
+      var validSignature = await this.validSignature(peerId, req.signature, JSON.stringify(req.message))
+      if(!validSignature){
+	console.log("Invalid Signature")
+        return
+      }
+    }
+    catch (err) {
+      console.log("Invalid Signature, Ignoring Request")
       return
-    }  
+    }
+
     console.log("Received Message with Valid Signature")
     const seq = this.connSeq
 
@@ -258,12 +255,12 @@ class P2P {
         break
       case "requestRegistration":
         var registration = await this.getRegistration()
-        var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
+        var message = {method: "register", message: registration.message, signature: registration.signature}
         //console.log(conn)
-	await this.send(message, conn)
+	await this.signAndsend(message, conn)
         break
       default:
-       await this.send(JSON.stringify({method: 'response', message: 'Error: Invalid value for parameter method'}), conn)
+       await this.signAndsend({method: 'response', message: 'Error: Invalid value for parameter method'}, conn)
        break
     }
     return
