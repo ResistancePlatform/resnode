@@ -25,7 +25,7 @@ class P2P {
 
     try {
     // Peer Identity, a random hash for identify your peer
-      this.resAddress = await rpc.getPublicAddress()
+      this.resAddress = await this.rpc.getPublicAddress()
       //myId = resAddress//Buffer.from(resAddress, "utf-8") //crypto.randomBytes(32)
       console.log(this.resAddress)
     } catch (e) {
@@ -246,3 +246,5 @@ class P2P {
  * Default DNS and DHT servers
  * This servers are used for peer discovery and establishing connection
  */
+
+module.exports = P2P
