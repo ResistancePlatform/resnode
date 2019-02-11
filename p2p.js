@@ -69,13 +69,13 @@ class P2P {
       console.log(`Connected  to peer: ${peerId}`)
 
       // Keep alive TCP connection with peer
-      /*if (info.initiator) {
+      if (info.initiator) {
         try {
           conn.setKeepAlive(true, 600)
         } catch (exception) {
 	  console.log(exception)
         }
-      }*/
+      }
       conn.on('data', async (data) => {
         // Here we handle incomming messages
         //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
