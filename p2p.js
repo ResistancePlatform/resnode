@@ -6,15 +6,28 @@ const readline = require('readline')
 const hex2ascii = require('hex2ascii')
 const moment = require('moment')
 const RpcClient = require('./resistancerpc.js')
+const dns = require('dns-then');
 
 class P2P {
   constructor(){
     this.rpc = new RpcClient()
     this.peers = {}
     this.connSeq = 0
+    this.wlips = []
+    this.nodes = ["resnode.tk", "resnode2.tk"]
   }
 
   async init(){
+    //get ip addresses of allowed nodes in the network
+    for(var i=0; i < this.nodes.length; i++){
+      try{
+	var ip = await dns.lookup(this.nodes[i])
+	this.wlips.push(ip)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
     try {
     // Peer Identity, a random hash for identify your peer
       this.resAddress = await this.rpc.getPublicAddress()
@@ -27,6 +40,7 @@ class P2P {
     const config = defaults({
       // peer-id
       id: this.resAddress,
+      whitelist: this.wlips
     })
 
     /**
@@ -88,7 +102,7 @@ class P2P {
       })
 
       // Save the connection
-      
+        
       if (!this.peers[peerId]) {
         this.peers[peerId] = {}
       }
