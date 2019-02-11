@@ -244,7 +244,7 @@ const sw = Swarm(config)
       //console.log("PEER ID: " + getPubKey(peerId)) //getPubKey(hex2ascii(peerId)[0]))
       //decrypt(data.toString(),getSharedSecret(getPubKey(hex2ascii(peerId)),getPrivateKey()))
       try{
-	console.log(await apiHandler(data.toString(), conn, info))
+	await apiHandler(data.toString(), conn, info)
 	//send(JSON.stringify({method: 'response', message: 'Error'}), conn)
         /*log(
           'Received Message from peer ' + peerId,
