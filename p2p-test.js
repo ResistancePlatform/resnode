@@ -13,14 +13,6 @@ setInterval(async function() {
   for(var peer in peers){
     if(!peers[peer].registered){
       p2p.send(message, peers[peer].conn)
-    //for testing only
-    setInterval(async function() {
-      // method to be executed;
-      var registration = await this.getRegistration()
-      var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-      this.sendAll(message)
-    }, 5000);
-
       console.log("Sent registration")
     }
   }
