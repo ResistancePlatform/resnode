@@ -7,7 +7,8 @@ p2p.init()
 setInterval(async function() {
   // method to be executed;
   var peers = p2p.peers
-  var registration = await p2p.getRegistration()
+  console.log(peers)
+  //var registration = await p2p.getRegistration()
   var message = JSON.stringify({method: "requestRegistration"})
   for(var peer in peers){
     if(!peers[peer].registered){
