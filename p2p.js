@@ -89,7 +89,7 @@ class P2P {
 
       // Save the connection
       
-      if (!peers[peerId]) {
+      if (!this.peers[peerId]) {
         this.peers[peerId] = {}
       }
       this.peers[peerId].conn = conn
