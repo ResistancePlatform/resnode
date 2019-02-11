@@ -260,7 +260,9 @@ class P2P {
 	await this.signAndSend(message, conn)
         break
       default:
-       await this.signAndSend({method: 'response', message: 'Error: Invalid value for parameter method'}, conn)
+       //await this.signAndSend({method: 'response', message: 'Error: Invalid value for parameter method'}, conn)
+       console.log("Unhandled API Request")
+       console.log(req)
        break
     }
     return
