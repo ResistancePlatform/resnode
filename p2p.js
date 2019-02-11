@@ -133,7 +133,7 @@ async function getRegistration() {
   return registration
 }
 
-async function handleRegistration(req){
+async function handleRegistration(req, conn){
   var message = req.message
   var signature = req.signature
 
@@ -170,7 +170,7 @@ async function apiHandler(req, conn, info){
       console.log(req)
       break
     case "register":
-     handleRegistration(req)
+     handleRegistration(req, conn)
      break
     default:
      send(JSON.stringify({method: 'response', message: 'Error: Invalid value for parameter method'}), conn)
