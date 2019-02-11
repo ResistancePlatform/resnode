@@ -174,6 +174,7 @@ class P2P {
   async signAndSend(message, conn){
     try {
       var data = {}
+      message.timestamp = moment().valueOf()
       var signature = await this.rpc.signMessage(this.resAddress, JSON.stringify(message))
       data.signature = signature
       data.message = message
@@ -225,6 +226,16 @@ class P2P {
     //check required parameters
     if(!req.signature || !req.message){
       console.log("Message missing signature or message")
+      return
+    }
+    
+    if(!req.message.timestamp) {
+      console.log("Message missing timestamp")
+      return
+    }
+
+    if(moment(req.message.timestamp).diff(moment(), 'seconds') > 10){
+      console.log("Timestamp is more than 10 seconds out of date... Ignoring...")
       return
     }
     
