@@ -133,6 +133,27 @@ async function getRegistration() {
   return registration
 }
 
+async function handleRegistration(req){
+  var message = req.message
+  var signature = req.signature
+
+  if(!message){
+    send(JSON.stringify({method: 'response', message: 'Error: Missing Parameter message'}, conn))
+    return
+  }
+  if(!signature){
+    send(JSON.stringify({method: 'response', message: 'Error: Missing Parameter signature'}, conn))
+    return
+  }
+  if(!await validSignature(req.message.address, req.signature, JSON.stringify(req.message))){
+    send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
+    return
+  }
+  send(JSON.stringify({method: 'response', message: 'Registration Successful'}), conn)
+  return
+
+}
+
 async function apiHandler(req, conn, info){
   var peerId = info.id.toString()
   try{
@@ -141,38 +162,20 @@ async function apiHandler(req, conn, info){
     console.log(error)
     return
   }
-  const seq = connSeq
-  if(!req.method){
-    send(JSON.stringify({method: 'response', message: 'Error'}), conn)
-    return //"Error: Method not specified"
-  } else if(req.method == 'response'){
-    console.log(req)
-    return
-  } else if(req.method == 'register'){
-    //var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
-    var message = req.message
-    var signature = req.signature
-    
-    if(!message || !signature){
-      send(JSON.stringify({method: 'response', message: 'Error'}, conn))
-      return
-    }
-    //var data = JSON.stringify({address: resAddress, publickey: resPublicKey.pubkey, timestamp:moment().valueOf()})
-    if(!await validSignature(req.message.address, req.signature, JSON.stringify(req.message))){
-      send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
-      return
-    }
-    /*if (!peers[peerId]) {
-      peers[peerId] = {}
-    }
-    peers[peerId].conn = conn
-    peers[peerId].seq = seq
-    console.log(`Sequence: ${seq}`)
-    connSeq++*/
-    send(JSON.stringify({method: 'response', message: 'Registration Successful'}), conn)
-    return
-  }
 
+  const seq = connSeq
+
+  switch(req.method){
+    case "response":
+      console.log(req)
+      break
+    case "register":
+     handleRegistration(req)
+     break
+    default:
+     send(JSON.stringify({method: 'response', message: 'Error: Invalid value for parameter method'}), conn)
+  }
+  return
 }
 
 /** 
