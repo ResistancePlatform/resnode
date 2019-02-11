@@ -82,8 +82,8 @@ class P2P {
         // Here we handle peer disconnection
         console.log(`Connection closed, peer id: ${peerId}`)
         // If the closing connection is the last connection with the peer, removes the peer
-        if (peers[peerId].seq === seq) {
-          delete peers[peerId]
+        if (this.peers[peerId].seq === seq) {
+          delete this.peers[peerId]
         }
       })
 
