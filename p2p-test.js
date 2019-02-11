@@ -12,7 +12,7 @@ setInterval(async function() {
   for(var peer in peers){
     //if(!peers[peer].registered){
       if(peers[peer].conn){
-	console.log(peers[peers].conn)
+	console.log(peers[peer].conn)
         await p2p.send(message, peers[peer].conn)
       }
     //}
