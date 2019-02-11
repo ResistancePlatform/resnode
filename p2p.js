@@ -251,7 +251,7 @@ class P2P {
       case "ping":
 	await this.signAndSend({method:'response', message:'pong'}, conn)
       case "register":
-        await this.handleRegistration(req, conn)
+        //await this.handleRegistration(req, conn)
         break
       case "requestRegistration":
         var registration = await this.getRegistration()
