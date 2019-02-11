@@ -205,6 +205,7 @@ class P2P {
       this.send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
       return
     }
+    this.peers[req.message.address].registered = true
     this.send(JSON.stringify({method: 'response', message: 'Registration Successful'}), conn)
     return
 
