@@ -171,6 +171,18 @@ class P2P {
     }
   }
 
+  async signAndSend(message, conn){
+    try {
+      var data = {}
+      var signature = await this.rpc.signMessage(this.resAddress, JSON.stringify(message))
+      data.signature = signature
+      data.message = message
+      conn.write(data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   async validSignature(address, signature, message){
     try {
       return await this.rpc.verifyMessage(address, signature, message)
@@ -220,13 +232,27 @@ class P2P {
       console.log(error)
       return
     }
-
+    
+    //check required parameters
+    if(!req.signature || !req.message){
+      console.log("Message missing signature or message")
+    }
+    
+    //check message signature
+    if(!await this.validSignature(peerId, req.signature, JSON.stringify(req.message))){
+      await this.send(JSON.stringify({method: 'response', message: 'Error: Invalid Signature'}), conn)
+      console.log("Invalid Signature")
+      return
+    }  
+    console.log("Received Message with Valid Signature")
     const seq = this.connSeq
 
     switch(req.method){
       case "response":
         console.log(req)
         break
+      case "ping":
+	await this.signAndSend({method:'response', message:'pong'}, conn)
       case "register":
         await this.handleRegistration(req, conn)
         break

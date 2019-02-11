@@ -11,8 +11,9 @@ setInterval(async function() {
   var message = JSON.stringify({method: "register", message: registration.message, signature: registration.signature})
   var message = JSON.stringify({method: "requestRegistration"})
   for(var peer in peers){
-    if(!peers[peer].registered){
-      await p2p.send(message, peers[peer].conn)
-    }
+    await p2p.signAndSend({method:'ping'}, peers[peer].conn)
+    //if(!peers[peer].registered){
+      //await p2p.send(message, peers[peer].conn)
+    //}
   }
 }, 5000, p2p);
