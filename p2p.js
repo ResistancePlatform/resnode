@@ -234,8 +234,9 @@ class P2P {
       return
     }
 
-    if(moment(req.message.timestamp).diff(moment(), 'seconds') > 10){
-      console.log("Timestamp is more than 10 seconds out of date... Ignoring...")
+    var timestampAge = moment().diff(moment(req.message.timestamp), 'seconds')
+    if(timestampAge > 2){
+      console.log("Timestamp is more than 2 seconds out of date... Ignoring...")
       return
     }
     
