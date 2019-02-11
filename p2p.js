@@ -206,7 +206,7 @@ class P2P {
     var message = req.message
     var signature = req.signature
     this.peers[req.message.address].registered = true
-    await this.signAndsend({method: 'response', message: 'Registration Successful'}, conn)
+    await this.signAndSend({method: 'response', message: 'Registration Successful'}, conn)
     return
   }
 
@@ -244,7 +244,7 @@ class P2P {
     console.log("Received Message with Valid Signature")
     const seq = this.connSeq
 
-    switch(req.method){
+    switch(req.message.method){
       case "response":
         console.log(req)
         break
@@ -262,7 +262,7 @@ class P2P {
       default:
        //await this.signAndSend({method: 'response', message: 'Error: Invalid value for parameter method'}, conn)
        console.log("Unhandled API Request")
-       console.log(req.method)
+       console.log(req)
        break
     }
     return
