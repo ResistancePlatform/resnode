@@ -183,7 +183,6 @@ const initialize = () => {
           if (!err2) {
             ident.nets = nets;
 	    pubkey = await rpc.getPublicKey(await rpc.getPublicAddress()) 
-	    console.log(pubkey)
 	    ident.pubkey = pubkey.pubkey
             socket.emit('initnode', ident, () => {
               // only pass email and nets on init.
