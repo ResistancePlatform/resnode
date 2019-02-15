@@ -6,10 +6,21 @@ const SNode = require('./SNodeTracker').auto();
 const pkg = require('./package.json');
 const init = require('./init');
 const configuration = require('./config/config');
+const RPC = require('./resistancerpc.js')
+
+const rpc = new RPC()
+
 var app = require('express')();
 var server = require('http').Server(app);
-const listener = server.listen(3000, function() {
+const listener = server.listen(3000, async function() {
   console.log('Your app is listening on port ' + listener.address().port);
+  try{
+    await rpc.getInfo()
+  } catch (err){
+    console.log(err)
+    console.log("You must have the resistance daemon running to start the app")
+    process.exit()
+  }
 });
 
 const file = './config/config.json';
@@ -20,6 +31,7 @@ if (!configuration) {
   console.log('Please run setup: node setup');
   process.exit();
 }
+
 
 
 const nodetype = configuration.active;
@@ -167,9 +179,12 @@ const initialize = () => {
         console.log(result.addr);
 
         ident.email = config.email;
-        SNode.getNetworks(null, (err2, nets) => {
+        SNode.getNetworks(null, async (err2, nets) => {
           if (!err2) {
             ident.nets = nets;
+	    pubkey = await rpc.getPublicKey(await rpc.getPublicAddress()) 
+	    console.log(pubkey)
+	    ident.pubkey = pubkey.pubkey
             socket.emit('initnode', ident, () => {
               // only pass email and nets on init.
               delete ident.email;
