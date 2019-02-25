@@ -7,10 +7,15 @@ const pkg = require('./package.json');
 const init = require('./init');
 const configuration = require('./config/config');
 const RPC = require('./resistancerpc.js')
+const bodyParser = require('body-parser')
+const expressValidator = require('express-validator')
+const express = require('express')
 
 const rpc = new RPC()
 
-var app = require('express')();
+var app = express();
+app.use(expressValidator())
+app.use(bodyParser())
 var server = require('http').Server(app);
 const listener = server.listen(3000, async function() {
   console.log('Your app is listening on port ' + listener.address().port);
