@@ -26,8 +26,9 @@ module.exports = function(app){
 	for (var i = 0; i < topNodes.length; i++){
 	  pubkeys.push(topNodes[i].pubkey)
 	}
-	var address = multisig.createDepositAddress(pubkey, req.body.locktime)
-        res.send(JSON.stringify({"status":"success", "data":{"address":address}})) 
+	console.log(req.body.locktime)
+	var address = multisig.createDepositAddress(pubkeys, req.body.locktime)
+        res.send(JSON.stringify({"status":"success", "data":{"address":address[0], "redeemScript":address[1]}})) 
       }
   })
 }
