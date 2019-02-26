@@ -34,6 +34,12 @@ function getRedeemScript(signers, locktime){
   return bitcoin.script.compile(script, network)
 }
 
+function scriptToAddress(redeemScript) {
+  var scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript))
+  var address = bitcoin.address.fromOutputScript(scriptPubKey, network)
+  return address
+}
+
 function createDepositAddress(signers, locktime){
  var redeemScript = getRedeemScript(signers, locktime)
  var scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript))
@@ -42,4 +48,4 @@ function createDepositAddress(signers, locktime){
  return [address,redeemScript]
 }
 
-module.exports = {createDepositAddress}
+module.exports = {createDepositAddress, scriptToAddress}

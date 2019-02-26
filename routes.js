@@ -28,7 +28,22 @@ module.exports = function(app){
 	}
 	console.log(req.body.locktime)
 	var address = multisig.createDepositAddress(pubkeys, req.body.locktime)
-        res.send(JSON.stringify({"status":"success", "data":{"address":address[0], "redeemScript":address[1]}})) 
+        res.send(JSON.stringify({"status":"200", "data":{"address":address[0], "redeemScript":address[1].toString('hex')}})) 
       }
+  })
+  app.post('/api/verifyScript', async function(req, res) {
+    var errors = validator.validate('verifyScript', req)
+    if(errors){
+      res.status(400).json(errors)
+    } else { 
+     var address = req.body.address
+     var script = req.body.script
+     var compiledAddress = multisig.scriptToAddress(Buffer.from(script, 'hex')) 
+     if(compiledAddress && address && compiledAddress == address) {
+       res.send(JSON.stringify({"status":"200","data":{"valid":true}}))
+     } else {
+       res.send(JSON.stringify({"status":"200", "data":{"valid":false}}))
+     }
+    }
   })
 }
