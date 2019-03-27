@@ -1,7 +1,11 @@
 module.exports = {
-    "extends": "airbnb-base",
-    "rules": {
-      "max-len": [1, 120, 2, {ignoreComments: true}],
-      "no-console": 0
-    }
-};
+  "extends": "standard",
+  "rules": {
+    "operator-linebreak": "off",
+    "space-before-function-paren": ["error", {
+      "anonymous": "always",
+      "named": "never",
+      "asyncArrow": "always"
+    }]
+  }
+}

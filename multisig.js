@@ -1,16 +1,16 @@
 var bitcoin = require('bitgo-utxo-lib-res')
 var NETWORKS = require('bitgo-utxo-lib-res/src/networks')
-var bip65 = require('bip65')
-var moment = require('moment')
+// var bip65 = require('bip65')
+// var moment = require('moment')
 
 var network = NETWORKS['res']
-var hashType = bitcoin.Transaction.SIGHASH_ALL
+// var hashType = bitcoin.Transaction.SIGHASH_ALL
 
-function getRedeemScript(signers, locktime){
-  var requiredSignatures = Math.floor(signers.length*0.75)
+function getRedeemScript(signers, locktime) {
+  var requiredSignatures = Math.floor(signers.length * 0.75)
   var totalSignatures = signers.length
-  console.log("Required Signatures: " + requiredSignatures)
-  console.log("Total Signatures: " + totalSignatures)
+  console.log(`Required Signatures: ` + requiredSignatures)
+  console.log(`Total Signatures: ` + totalSignatures)
   var script = [
     bitcoin.opcodes.OP_IF,
     bitcoin.script.number.encode(locktime),
@@ -40,12 +40,15 @@ function scriptToAddress(redeemScript) {
   return address
 }
 
-function createDepositAddress(signers, locktime){
- var redeemScript = getRedeemScript(signers, locktime)
- var scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript))
- var address = bitcoin.address.fromOutputScript(scriptPubKey, network)
- console.log(redeemScript)
- return [address,redeemScript]
+function createDepositAddress(signers, locktime) {
+  var redeemScript = getRedeemScript(signers, locktime)
+  var scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript))
+  var address = bitcoin.address.fromOutputScript(scriptPubKey, network)
+  console.log(redeemScript)
+  return [address, redeemScript]
 }
 
-module.exports = {createDepositAddress, scriptToAddress}
+module.exports = {
+  createDepositAddress,
+  scriptToAddress
+}
