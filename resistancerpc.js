@@ -96,7 +96,7 @@ class RpcClient {
     return this.rpcclient.signMessage(address, message)
   }
 
-  async z_getnewaddress() {
+  async zGetNewAddress() {
     try {
       return await this.rpcclient.command('z_getnewaddress')
     } catch (e) {

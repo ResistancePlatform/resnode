@@ -266,7 +266,7 @@ class SNode {
             status: op.status,
             txid: op.result.txid,
             execSeconds: op.execution_secs,
-            created: op.creation_time,
+            created: op.creation_time
           }
           if (os === 'linux') {
             resp.memBefore = self.memBefore
@@ -340,12 +340,12 @@ class SNode {
         const node = {
           version: data.version,
           protocolversion: data.protocolversion,
-          'wallet.version': data.walletversion,
+          'wallet.version': data.walletversion
         }
         if (!self.ident.nid && req.nid) self.ident.nid = req.nid
 
         const config = {
-          node, trkver, hw, mem: self.mem, nodejs, platform,
+          node, trkver, hw, mem: self.mem, nodejs, platform
         }
         self.socket.emit('node', { type: 'config', ident: self.ident, config })
       })
@@ -404,7 +404,7 @@ class SNode {
                 isValidBal: addrBal.valid,
                 queueDepth: count,
                 lastChalBlock: addrBal.lastChalBlock,
-                lastExecSec: local.getItem('lastExecSec'),
+                lastExecSec: local.getItem('lastExecSec')
               }
 
               if (addrBal.bal < self.minChalBal && addrBal.valid) {

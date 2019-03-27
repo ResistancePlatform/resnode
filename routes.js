@@ -1,8 +1,11 @@
 const request = require('request-promise')
 const validator = require('./validator.js')
 const multisig = require('./multisig.js')
+const RPC = require('./resistancerpc.js')()
 
-function getTopRatedNodes (nodes) {
+const rpc = new RPC()
+
+function getTopRatedNodes(nodes) {
   return nodes.filter(node => node.fqdn && node.taddr && node.pubkey)
 }
 
@@ -10,9 +13,32 @@ module.exports = function (app) {
   app.get('/health', async function (req, res) {
     res.send(JSON.stringify({ status: `OK` }))
   })
+
   app.get('/p2p', async function (req, res) {
     res.send(`Sent the message`)
   })
+
+  app.post('/api/trade', async function (req, res) {
+    const errors = validator.validate('postTrade', req)
+
+    if (errors) {
+      res.status(400).json(errors)
+    } else {
+      const localNodePublicKey = await rpc.getPublicKey(await rpc.getPublicAddress())
+
+      res.send(JSON.stringify({
+        'status': 200,
+        'data': {}
+      }))
+    }
+  })
+
+  app.get('/api/trade', async function (req, res) {
+  })
+
+  app.post('/api/claim', async function (req, res) {
+  })
+
   app.post('/api/deposit', async function (req, res) {
     var errors = validator.validate('deposit', req)
     if (errors) {
@@ -31,6 +57,7 @@ module.exports = function (app) {
       res.send(JSON.stringify({ 'status': '200', 'data': { 'address': address[0], 'redeemScript': address[1].toString('hex') } }))
     }
   })
+
   app.post('/api/verifyScript', async function (req, res) {
     var errors = validator.validate('verifyScript', req)
 
