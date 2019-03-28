@@ -1,7 +1,7 @@
 const request = require('request-promise')
 const validator = require('./validator.js')
 const multisig = require('./multisig.js')
-const RPC = require('./resistancerpc.js')()
+const RPC = require('./resistancerpc.js')
 
 const rpc = new RPC()
 
@@ -24,7 +24,18 @@ module.exports = function (app) {
     if (errors) {
       res.status(400).json(errors)
     } else {
-      const localNodePublicKey = await rpc.getPublicKey(await rpc.getPublicAddress())
+      const { scriptPubKey: localNodePublicKey } = await rpc.getPublicKey(await rpc.getPublicAddress())
+
+      // Looking for the public key in deposit transaction
+
+      const depositTransaction = rpc.getRawTransactionVerbose(req.body.depositTxid)
+      const isDepositSignedByMe = depositTransaction.vout.find(item => item.scriptPubKey.hex === localNodePublicKey)
+
+      if (!isDepositSignedByMe) {
+        return res.status(400).json({ error: `Deposit transaction is not signed by me!` })
+      }
+
+      // Checking if trade txid exists in the blockchain
 
       res.send(JSON.stringify({
         'status': 200,

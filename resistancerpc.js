@@ -88,6 +88,10 @@ class RpcClient {
     }
   }
 
+  async getRawTransactionVerbose(txid) {
+    return this.rpcclient.command('getrawtransaction', txid, 2)
+  }
+
   async verifyMessage(address, signature, message) {
     return this.rpcclient.verifyMessage(address, signature, message)
   }
