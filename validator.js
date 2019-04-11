@@ -13,6 +13,9 @@ exports.validate = (method, req) => {
       break
     }
     case 'claim': {
+      req.checkBody('tradeCurrency', `trade currency name must be a 3 to 5 characters string`).exists().matches(/^\w{3,5}$/)
+      req.checkBody('tradeTxid', `trade txid must be a 10 character string`).exists().matches(/^\w{10,10}$/)
+      req.checkBody('refundAddress', `address to send the refund to`).exists()
       break
     }
     case 'deposit': {

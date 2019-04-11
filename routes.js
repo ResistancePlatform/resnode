@@ -43,7 +43,10 @@ module.exports = function (app) {
       // TODO: Check two confirmations
 
       if (!isDepositSignedByMe) {
-        return res.status(400).json({ error: `Deposit transaction is not signed by me.` })
+        return res.status(400).json({
+          errorCode: `TRADE_INVALID_SIGNATURE`,
+          error: `Deposit transaction is not signed by me.`
+        })
       }
 
       // Checking if trade txid exists in the blockchain
@@ -52,7 +55,10 @@ module.exports = function (app) {
       })
 
       if (tx.error) {
-        return res.status(400).json({ error: `Trade transaction not found on ${tradeCurrency} blockchain.` })
+        return res.status(400).json({
+          errorCode: `TRADE_NOT_FOUND`,
+          error: `Trade transaction not found on ${tradeCurrency} blockchain.`
+        })
       }
 
       // Add the details of that transaction (timestamp and txid) to a local database
@@ -66,9 +72,37 @@ module.exports = function (app) {
   })
 
   app.get('/api/trade', async function (req, res) {
+    const timestamp = tradeStorage[req.body.tradeTxid]
+    if (!timestamp) {
+      return res.status(404).json({
+        errorCode: `TRADE_MISSING_TRANSACTION`,
+        error: `Specified trade not found on the blockchain, or the deposit transaction is missing.`
+      })
+    }
+    return res.status(200).json({ timestamp })
   })
 
   app.post('/api/claim', async function (req, res) {
+    const {
+      depositTxid,
+      tradeTxid,
+      tradeCurrency
+    } = req.body
+
+    // Checking if trade txid exists in the blockchain
+    const tx = await callElectrumClient(tradeCurrency, async client => {
+      return client.blockchain_transaction_get(tradeTxid)
+    })
+
+    if (!tx.error) {
+      return res.status(400).json({
+        errorCode: `CLAIM_TRADE_EXISTS`,
+        error: `The trade transaction is found on the blockchain.`
+      })
+    }
+
+    // Looking for 10+ masternodes signatures
+
   })
 
   app.post('/api/deposit', async function (req, res) {
