@@ -1,9 +1,11 @@
+const { LocalStorage } = require('node-localstorage')
 const request = require('request-promise')
 const validator = require('./validator.js')
 const multisig = require('./multisig.js')
 const RPC = require('./resistancerpc.js')
 const { callElectrumClient } = require('./electrum.js')
 
+const tradeStorage = new LocalStorage('./config/trade')
 const rpc = new RPC()
 
 function getTopRatedNodes(nodes) {
@@ -53,9 +55,12 @@ module.exports = function (app) {
         return res.status(400).json({ error: `Trade transaction not found on ${tradeCurrency} blockchain.` })
       }
 
+      // Add the details of that transaction (timestamp and txid) to a local database
+      tradeStorage[tradeTxid] = new Date().toISOString()
+
       res.send(JSON.stringify({
-        'status': 200,
-        'data': {}
+        status: 200,
+        data: {}
       }))
     }
   })
