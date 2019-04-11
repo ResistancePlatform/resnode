@@ -2,6 +2,7 @@ const request = require('request-promise')
 const validator = require('./validator.js')
 const multisig = require('./multisig.js')
 const RPC = require('./resistancerpc.js')
+const { callElectrumClient } = require('./electrum.js')
 
 const rpc = new RPC()
 
@@ -28,14 +29,29 @@ module.exports = function (app) {
 
       // Looking for the public key in deposit transaction
 
-      const depositTransaction = rpc.getRawTransactionVerbose(req.body.depositTxid)
+      const {
+        depositTxid,
+        tradeTxid,
+        tradeCurrency
+      } = req.body
+
+      const depositTransaction = rpc.getRawTransactionVerbose(depositTxid)
       const isDepositSignedByMe = depositTransaction.vout.find(item => item.scriptPubKey.hex === localNodePublicKey)
 
+      // TODO: Check two confirmations
+
       if (!isDepositSignedByMe) {
-        return res.status(400).json({ error: `Deposit transaction is not signed by me!` })
+        return res.status(400).json({ error: `Deposit transaction is not signed by me.` })
       }
 
       // Checking if trade txid exists in the blockchain
+      const tx = await callElectrumClient(tradeCurrency, async client => {
+        return client.blockchain_transaction_get(tradeTxid)
+      })
+
+      if (tx.error) {
+        return res.status(400).json({ error: `Trade transaction not found on ${tradeCurrency} blockchain.` })
+      }
 
       res.send(JSON.stringify({
         'status': 200,
