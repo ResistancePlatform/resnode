@@ -23,6 +23,11 @@ exports.validate = (method, req) => {
       req.checkBody('pubkey', 'pubkey is the 66 character public key associated with your ResDEX account').exists().matches(/^\w{66,66}$/)
       break
     }
+    case 'verityDeposit': {
+      req.checkBody('address', 'this must be the address where you deposited your RES').exists().matches(/^\w{35,35}$/)
+      req.checkBody('redeemScript', 'the script of the contract that you deposited to').exists().matches(/^\w{0,500}$/) // this needs to be restricted
+      break
+    }
     case 'verifyScript': {
       req.checkBody('address', 'the p2sh address you are verifying').exists()
       req.checkBody('script', 'the buffer of the script you are verifying').exists()

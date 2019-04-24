@@ -108,10 +108,38 @@ module.exports = function (app) {
   // This method will verify that the smart contract funds are indeed in the address, and that the smart contract
   // contains the public keys of the top rated masternodes. This is to prevent a user from submitting funds to a smart
   // contract with masternodes that are all owned by that user.
+  //
+  // The client should post both the address that they deposited the coins to, and the hex version of the smart
+  // contract.
+  //
+  // This code needs to check that
+  //
+  // 1. the address deposited to is valid and has a confirmation on the blockchain,
+  // 2. the address has a balance on the blockchain,
+  // 3. the address's script hash matches the hash of the script submitted by the user
+  // 4. the script submitted by the user has the public keys of the top masternodes included
+  //
+  // If the checks above succeed, this code needs to record in a database
+  //
+  // 1. The current balance of the deposit
+  // 2. The txid of the deposit
+  // 3. The timestamp of the deposit
+  // 4. the address submitted by the user
+  // 6. the address submitted by the user
+  // 7. A unique ID to associate with this entry
+  //
+  // The user needs to post this same request to the other masternodes included in the script
   app.post('/api/verifyDeposit', async function (req, res) {
     var errors = validator.validate('verifyDeposit', req)
     if (errors) {
       res.status(400).json(errors)
+    } else {
+      res.send(JSON.stringify({
+        status: 200,
+        data: 'This endpoint needs to be implemented.'
+      }))
+      console.log(req.address)
+      console.log(req.redeemScript)
     }
   })
 
