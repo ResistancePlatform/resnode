@@ -2348,4 +2348,4 @@ port: 10009,
   },
 ]
 
-export { supportedCurrencies }
+module.exports = { supportedCurrencies }

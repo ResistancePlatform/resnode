@@ -3,7 +3,7 @@ const electrumClientModule = require('electrum-client')
 const { Client } = electrumClientModule
 
 // Version control interface
-const { ElectrumProtocol } = electrumClientModule.v1
+const { ElectrumProtocol } = electrumClientModule //electrumClientModule.v1
 
 /**
  * C
@@ -65,6 +65,6 @@ const proc = async (ecl) => {
 }
 */
 
-export {
+module.exports = {
   callElectrumClient
 }

@@ -102,9 +102,24 @@ module.exports = function (app) {
     }
 
     // Looking for 10+ masternodes signatures
-
   })
 
+  // This method is called after the client has successfully deposited their funds into the Resistance smart contract.
+  // This method will verify that the smart contract funds are indeed in the address, and that the smart contract
+  // contains the public keys of the top rated masternodes. This is to prevent a user from submitting funds to a smart
+  // contract with masternodes that are all owned by that user.
+  app.post('/api/verifyDeposit', async function (req, res) {
+    var errors = validator.validate('verifyDeposit', req)
+    if (errors) {
+      res.status(400).json(errors)
+    }
+  })
+
+  // This method is responsible for generatng the smart contract and address for the client to then use to deposit the funds.
+  // It is not responsible for adding the smart contract details to the database because the client may not have deposited the
+  // funds yet.
+  // Once the user deposits the funds into the smart contract, they must call the 'verifyDeposit' endpoint with the address and hex smart
+  // contract of their deposit transactions.
   app.post('/api/deposit', async function (req, res) {
     var errors = validator.validate('deposit', req)
     if (errors) {
@@ -120,7 +135,13 @@ module.exports = function (app) {
       }
       console.log(req.body.locktime)
       var address = multisig.createDepositAddress(pubkeys, req.body.locktime)
-      res.send(JSON.stringify({ 'status': '200', 'data': { 'address': address[0], 'redeemScript': address[1].toString('hex') } }))
+      res.send(JSON.stringify({
+        status: 200,
+        data: {
+          address: address[0],
+          redeemScript: address[1].toString('hex')
+        }
+      }))
     }
   })
 
