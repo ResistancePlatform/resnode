@@ -1,0 +1,9 @@
+version: '3'
+services:
+  resnode:
+    build: .
+  resistance-core:
+    image: "resnode:"
+    ports:
+      -  "18132:18132"
+      -  "18133:18133"
