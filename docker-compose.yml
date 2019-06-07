@@ -1,9 +1,15 @@
 version: '3'
 services:
   resnode:
-    build: .
+    image: "resnode:latest"    
+    ports:
+      -  "3000:3000"
+    volumes:
+      - ${HOME}:/home/resuser
   resistance-core:
-    image: "resnode:"
+    image: "rescore:latest"
     ports:
       -  "18132:18132"
       -  "18133:18133"
+    volumes:      
+      - ${HOME}:/home/resuser      

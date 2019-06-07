@@ -1,10 +1,6 @@
 FROM node:8.16.0-alpine as builder
-run apk --no-cache add --virtual native-deps \
-  g++ gcc libgcc libstdc++ linux-headers make python && \
-  npm install --quiet node-gyp -g &&\
-  npm install --quiet && \
-  apk del native-deps
-
+RUN apk --no-cache add --virtual native-deps \
+	g++ make python
 RUN apk update && apk upgrade && \
 	apk add --no-cache bash git openssh-client
 
@@ -14,6 +10,7 @@ COPY . $RES_HOME/resnode
 RUN chown resuser:resuser $RES_HOME $RES_HOME/*
 USER resuser
 WORKDIR $RES_HOME/resnode
+
 # Warning!!!
 # Copy our private key into the image to be able to npm install
 # from our private repos
@@ -21,16 +18,18 @@ ARG SSH_PRIVATE_KEY
 RUN mkdir $RES_HOME/.ssh/
 RUN echo "${SSH_PRIVATE_KEY}" > $RES_HOME/.ssh/id_rsa
 RUN chmod 0400 $RES_HOME/.ssh/id_rsa
-# make sure your domain is accepted
+# Add github.com to known_hosts
 RUN touch $RES_HOME/.ssh/known_hosts
 RUN ssh-keyscan github.com >> $RES_HOME/.ssh/known_hosts
-
-# DEBUGGING
-RUN ls -alht
-RUN whoami
-
 RUN npm install
+# Not really necessary as the first stage's image will not be saved
+RUN rm $RES_HOME/.ssh/id_rsa
 
-#RUN node setup.js
-#CMD node app.js
+# The second stage will not contain any of the history from the builder image
+# i.e. the private ssh key
+FROM node:8.16.0-alpine
+ARG RES_HOME=/home/resuser
+USER resuser
+COPY --from=builder $RES_HOME/resnode .
+CMD node setup.js && node app.js
 
