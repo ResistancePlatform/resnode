@@ -18,11 +18,11 @@ ARG SSH_PRIVATE_KEY
 RUN mkdir $RES_HOME/.ssh/
 RUN echo "${SSH_PRIVATE_KEY}" > $RES_HOME/.ssh/id_rsa
 RUN chmod 0400 $RES_HOME/.ssh/id_rsa
-# Add github.com to known_hosts
 RUN touch $RES_HOME/.ssh/known_hosts
 RUN ssh-keyscan github.com >> $RES_HOME/.ssh/known_hosts
 RUN npm install
-# Not really necessary as the first stage's image will not be saved
+# The first stage's image will not include any of this but
+# just to err on the side of caution, delete the private key
 RUN rm $RES_HOME/.ssh/id_rsa
 
 # The second stage will not contain any of the history from the builder image

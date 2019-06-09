@@ -5,11 +5,11 @@ services:
     ports:
       -  "3000:3000"
     volumes:
-      - ${HOME}:/home/resuser
+      - ${HOME}/resuser:/home/resuser
   resistance-core:
     image: "rescore:latest"
     ports:
       -  "18132:18132"
       -  "18133:18133"
     volumes:      
-      - ${HOME}:/home/resuser      
+      - ${HOME}/resuser:/home/resuser      
