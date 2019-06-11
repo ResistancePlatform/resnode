@@ -4,7 +4,9 @@ RUN apk --no-cache add --virtual native-deps \
 RUN apk update && apk upgrade && \
 	apk add --no-cache bash git openssh-client
 
-RUN addgroup -S resuser && adduser -S resuser -G resuser
+RUN adduser --help
+RUN addgroup --help
+RUN addgroup -g 1001 resuser && adduser -u 1001 resuser -D -G resuser
 ARG RES_HOME=/home/resuser
 COPY . $RES_HOME/resnode
 RUN chown resuser:resuser $RES_HOME $RES_HOME/*
@@ -28,8 +30,11 @@ RUN rm $RES_HOME/.ssh/id_rsa
 # The second stage will not contain any of the history from the builder image
 # i.e. the private ssh key
 FROM node:8.16.0-alpine
-ARG RES_HOME=/home/resuser
-USER resuser
-COPY --from=builder $RES_HOME/resnode .
-CMD node setup.js && node app.js
 
+RUN addgroup -g 1001 resuser && adduser -u 1001 resuser -D -G resuser
+ARG RES_HOME=/home/resuser
+WORKDIR $RES_HOME
+COPY --from=builder $RES_HOME/resnode .
+RUN chown -R resuser:resuser .
+USER resuser
+CMD node setup.js && node app.js
