@@ -35,10 +35,10 @@ sudo apt update
 sudo apt upgrade
 ```
 2. Next install Docker, see the documentation here: https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-ce-1
-3. We also recommend that you configure Docker so that you can run Docker commands as a non-root user, see the instructions on the Docker install guide.
+3. We recommend that you configure Docker so that you can run commands as a non-root user, see the instructions in the Docker install guide.
 4. Install docker-compose, see the documentation here: https://docs.docker.com/compose/install/
-5. Before running a Resistance Masternode with Docker you need to initialize the Resistance core blockchain. To start with that, run Resistance core with Docker `docker run --rm -d -v ~/resuser:/home/resuser -p 18132:18132 -p 18133:18133 rescore:latest`. This will mount a directory in your home directory named `resuser`, this directory will be used for persistent storage for Resistance core e.g. the blockchain database.
-6. Now, wait for the blockchain to sync by running this command `watch -n30 docker exec -it -u resuser $(docker ps | grep rescore | awk '{print $1}') ./resistance-cli getblockchaininfo`.  When the headers and blocks match, that will indicate that syncing is complete.
+5. Before running a Resistance Masternode with Docker you need to initialize the Resistance core blockchain. To start with that, run Resistance core with Docker `docker run --rm -d -v ~/resuser:/home/resuser -p 18132:18132 -p 18133:18133 resistance-core:latest`. This will mount a directory in your home directory named `resuser`, this directory will be used for persistent storage for Resistance core e.g. the blockchain database.
+6. Now, wait for the blockchain to sync by running this command `watch -n30 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance-cli getblockchaininfo`.  When the headers and blocks match, that will indicate that syncing is complete.
 
 ### Stake and Challenge Balance
 
@@ -48,17 +48,17 @@ sudo apt upgrade
 
 2. On the remote AWS instance generate an r-address (`r_addr`) and two z-addresses (`z_addr1` and `z_addr21`). Make note of these addresses.
 Use this command to generate an r-address:
-`docker exec -it -u resuser $(docker ps | grep rescore | awk '{print $1}') ./resistance-cli getnewaddress`
+`docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli getnewaddress`
 Run this command twice to generate two z-addresses:
-`docker exec -it -u resuser $(docker ps | grep rescore | awk '{print $1}') ./resistance-cli z_getnewaddress`
-`docker exec -it -u resuser $(docker ps | grep rescore | awk '{print $1}') ./resistance-cli z_getnewaddress`
+`docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_getnewaddress`
+`docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_getnewaddress`
 3. In your **local wallet (not AWS)**, send 0.05 RES from `stake_addr` to `r_addr`
 4. On your **AWS Instance**, run the following command until you see the `transparent: 0.0499` appear
-`watch -n 30 docker exec -it -u resuser $(docker ps | grep rescore | awk '{print $1}') ./resistance-cli z_gettotalbalance`
+`watch -n 30 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_gettotalbalance`
 5. Once the balance appears there, run the following:
-`docker exec -it -u resuser $(docker ps | grep rescore | awk '{print $1}') ./resistance-cli z_sendmany $r_addr '[{"address": "'$z_addr1'", "amount":0.0249},{"address":"'$z_addr2'", "amount":0.0249}]'`
+`docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_sendmany $r_addr '[{"address": "'$z_addr1'", "amount":0.0249},{"address":"'$z_addr2'", "amount":0.0249}]'`
 6. Next, wait for the balance to transfer to the z-addresses (`private: 0.0498`)
-`docker exec -it -u resuser $(docker ps | grep rescore | awk '{print $1}') ./resistance-cli z_gettotalbalance`
+`docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_gettotalbalance`
 
 ### Create a domain name
 
