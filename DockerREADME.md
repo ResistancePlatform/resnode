@@ -93,7 +93,7 @@ sudo echo "externalip=IP_YOU_USED_IN_DNS_STEP" >> ~/resuser/.resistance/resistan
 ```docker exec . . . node setup.js
 ```
 6. When prompted, enter your `stk_addr` that you have 10,000 RES in
-7. Enter an email address for alerts
+7. Enter an email address for alerts	
 8. Enter your Full hostname (FQDN) that you registered earlier
 9. Click enter when prompted about IP
 10. Click enter when promped about Region
