@@ -101,9 +101,10 @@ sudo echo "externalip=IP_YOU_USED_IN_DNS_STEP" >> ~/resuser/.resistance/resistan
 12. You should now see: ***Configuration for testnet node saved. Setup complete!***
 
 ### Start up your node
-You are now ready to start up your masternode! Let's install PM2 so that the process handling is easier.
+You are now ready to start up your masternode!
 1. First stop the Resistance core and resnode containers, if they are still running. . .
 2. Now start them both up via docker-compose. . .
+3. 
 
 ### Viewing your Connectivity
 
