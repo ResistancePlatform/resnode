@@ -37,7 +37,7 @@ sudo apt upgrade
 2. Next install Docker, see the documentation here: https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-ce-1
 3. We recommend that you configure Docker so that you can run commands as a non-root user, see the instructions in the Docker install guide.
 4. Install docker-compose, see the documentation here: https://docs.docker.com/compose/install/
-5. Before running a Resistance Masternode with Docker you need to initialize the Resistance core blockchain. To start with that, run Resistance core with Docker `docker run --rm -d -v ~/resuser:/home/resuser -p 18132:18132 -p 18133:18133 resistance-core:latest`. This will mount a directory in your home directory named `resuser`, this directory will be used for persistent storage for Resistance core e.g. the blockchain database.
+5. Before running a Resistance Masternode with Docker you need to initialize the Resistance core blockchain. To start with that, run Resistance core with Docker `docker run --rm -d -v ~/resuser:/home/resuser -p 18132:18132 -p 18133:18133 resistanceio/resistance-core:latest`. This will mount a directory in your home directory named `resuser`, this directory will be used for persistent storage for Resistance core e.g. the blockchain database.
 6. Now, wait for the blockchain to sync by running this command `watch -n30 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance-cli getblockchaininfo`.  When the headers and blocks match, that will indicate that syncing is complete.
 
 ### Stake and Challenge Balance
@@ -83,7 +83,7 @@ You need to create a domain name for your site. You can do this using freenom.tk
 
 1. Add an entry into your resistance config. Note that you may need to run this command via `sudo` as your user account might not have permissions to the Masternode data directory.
 ```bash
-sudo echo "externalip=YOUR_AWS_INSTANCE_PUBLIC_IP" >> ~/resuser/.resistance/resistance.conf
+sudo bash -c 'echo "externalip=YOUR_AWS_INSTANCE_PUBLIC_IP" >> ~/resuser/.resistance/resistance.conf'
 ```
 
 ### Running the Resistance Node Tracker
