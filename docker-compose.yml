@@ -15,6 +15,7 @@ services:
       - ${HOME}/resuser:/home/resuser      
   watchtower:
     image: containrrr/watchtower
+    # The repo credentials should be removed when the repo becomes publicly available
     environment:
       - REPO_USER=<REDACTED>
       - REPO_PASS=<REDACTED>

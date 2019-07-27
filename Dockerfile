@@ -1,8 +1,10 @@
+# This is a multi-stage Dockerfile
+# Stage 1
 FROM node:8.16.0-stretch as builder
+
 RUN apt-get install g++ make python -y
 RUN apt-get update && apt-get upgrade -y && \
 	apt-get install bash git openssh-client -y
-
 RUN groupadd -g 1001 resuser && useradd -r -u 1001 -g resuser resuser
 ARG RES_HOME=/home/resuser
 COPY . $RES_HOME/resnode
@@ -12,7 +14,7 @@ WORKDIR $RES_HOME/resnode
 
 # Warning!!!
 # Copy our private key into the image to be able to npm install
-# from our private repos
+# from private repos
 ARG SSH_PRIVATE_KEY
 RUN mkdir $RES_HOME/.ssh/
 RUN echo "${SSH_PRIVATE_KEY}" > $RES_HOME/.ssh/id_rsa
@@ -25,8 +27,8 @@ RUN npm install
 USER root
 RUN rm $RES_HOME/.ssh/id_rsa
 
-# The second stage will not contain any of the history from the builder image
-# i.e. the private ssh key
+# Stage 2
+# This stage will not contain the private ssh key from Stage 1
 FROM node:8.16.0-stretch
 
 ARG GOSU_VERSION=1.11

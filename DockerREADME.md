@@ -74,7 +74,7 @@ You need to create a domain name for your site. You can do this using freenom.tk
 8. Log into your freenom account and go to: https://my.freenom.com/clientarea.php?action=domains
 9. Click "Manage Domain" next to the domain you just created
 10. Click "Manage Free DNS"
-11. Get your IP address from your AWS instance by running: `curl https://httpbin.org/ip`, copy the ip that is printed out
+11. Get your public IP address from your AWS instance by running: `curl https://httpbin.org/ip`, copy the ip that is printed out
 12. Enter the following: `Name: leave this empty`, `Type: A`, `TTL: 3600`, `Target: ip from your machine`
 13. Click save changes
 14. After a few minutes ping the domain you created and make sure it's accessible.
@@ -83,7 +83,7 @@ You need to create a domain name for your site. You can do this using freenom.tk
 
 1. Add an entry into your resistance config. Note that you may need to run this command via `sudo` as your user account might not have permissions to the Masternode data directory.
 ```bash
-sudo echo "externalip=IP_YOU_USED_IN_DNS_STEP" >> ~/resuser/.resistance/resistance.conf
+sudo echo "externalip=YOUR_AWS_INSTANCE_PUBLIC_IP" >> ~/resuser/.resistance/resistance.conf
 ```
 
 ### Running the Resistance Node Tracker
@@ -99,6 +99,13 @@ sudo echo "externalip=IP_YOU_USED_IN_DNS_STEP" >> ~/resuser/.resistance/resistan
 10. Click enter when promped about Region
 11. Click enter when prompted about Category
 12. You should now see: ***Configuration for testnet node saved. Setup complete!***
+
+todo:
+Command to add external ip, fail if not provided
+run setup interactively
+rebuild rescore image
+test up in AWS with a real DNS name!
+update doc accordingly
 
 ### Start up your node
 You are now ready to start up your masternode!
