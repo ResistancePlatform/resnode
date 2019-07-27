@@ -7,9 +7,18 @@ services:
     volumes:
       - ${HOME}/resuser:/home/resuser
   resistance-core:
-    image: "resistance-core:latest"
+    image: "index.docker.io/resistanceio/resistance-core:latest"
     ports:
       -  "18132:18132"
       -  "18133:18133"
     volumes:      
       - ${HOME}/resuser:/home/resuser      
+  watchtower:
+    image: containrrr/watchtower
+    environment:
+      - REPO_USER=<REDACTED>
+      - REPO_PASS=<REDACTED>
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/home/matthew/.docker/config.json
+    command: --interval 30
