@@ -8,9 +8,9 @@ services:
       - ${HOME}/resuser:/home/resuser
   resistance-core:
     image: "index.docker.io/resistanceio/resistance-core:latest"
-    ports:
-      -  "18132:18132"
-      -  "18133:18133"
+    ports: # for the testnet, use ports 18132 and 18133
+      -  "8132:8132"
+      -  "8133:8133"
     volumes:      
       - ${HOME}/resuser:/home/resuser      
   watchtower:
