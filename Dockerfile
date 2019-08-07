@@ -41,7 +41,7 @@ ARG GOSU_SHA="0b843df6d86e270c5b0f5cbd3c326a04e18f4b7f9b8457fa497b0454c4b138d7  
 RUN echo "$GOSU_SHA"
 RUN echo "$(sha256sum $GOSU_PATH)"
 RUN [ "$(sha256sum $GOSU_PATH)" = "${GOSU_SHA}" ] || exit 1
-RUN apt-get update -y && apt-get install rsync -y
+RUN apt-get update -y && apt-get install rsync jq -y
 
 RUN groupadd -g 1001 resuser && useradd -r -u 1001 -g resuser resuser
 ARG RES_HOME=/home/resuser
@@ -50,9 +50,7 @@ RUN chown -R resuser:resuser /resnode
 
 # This script runs as root to copy files into place (the mounted volume will ignore
 # the node app files otherwise) then execs as resuser to finish the resnode setup steps
-RUN chmod +x /resnode/init.sh
+RUN chmod +x /resnode/*.sh
 
-# TODO implement the run script
 WORKDIR /resnode
-#ENTRYPOINT /resnode/init.sh
-ENTRYPOINT sleep 10m
+ENTRYPOINT ./run.sh

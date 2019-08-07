@@ -1,20 +1,14 @@
 #!/bin/bash
-set -eo pipefail
+echo "Enter your node's FQDN"
+read fqdn
 
-export RES_HOME=/home/resuser
-export RES_BIN=/home/resuser/resistance
+echo "Enter your nodes' stake address"
+read stakeaddr
 
-# Init steps when running as root
-if [ "$(id -u)" = "0" ]; then
-    mkdir -p ${RES_HOME}/resnode
-    rsync -r --links --delete /resnode/ /home/resuser/resnode
-    chown resuser:resuser -R $RES_HOME/resnode
-    exec gosu resuser "$BASH_SOURCE" "$@"
-fi
+echo "Enter your email address"
+read email
 
-if [[ -d ./config ]]; then
-    # We need to initialize resnode
-    echo You must initialize resnode before continuing see the README
-    sleep 10m
-fi
-npm start
+CONFIG_JSON=./config/config.json
+sed -i "s/\"stakeaddr\": \".*\"/\"stakeaddr\": \"$stakeaddr\"/" $CONFIG_JSON
+sed -i "s/\"email\": \".*\"/\"email\": \"$email\"/" $CONFIG_JSON
+sed -i "s/\"fqdn\": \".*\"/\"fqdn\": \"$fqdn\"/" $CONFIG_JSON

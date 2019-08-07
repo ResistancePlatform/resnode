@@ -38,7 +38,7 @@ sudo apt upgrade
 3. We recommend that you configure Docker so that you can run commands as a non-root user, see the instructions in the Docker install guide.
 4. Install docker-compose, see the documentation here: https://docs.docker.com/compose/install/
 5. Before running a Resistance Masternode with Docker you need to initialize the Resistance core blockchain. To start with that, run Resistance core with Docker `docker run --rm -d -v ~/resuser:/home/resuser -p 18132:18132 -p 18133:18133 resistanceio/resistance-core:latest`. This will mount a directory in your home directory named `resuser`, this directory will be used for persistent storage for Resistance core e.g. the blockchain database.
-6. Now, wait for the blockchain to sync by running this command `watch -n30 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance-cli getblockchaininfo`.  When the headers and blocks match, that will indicate that syncing is complete.
+6. Now, wait for the blockchain to sync by running this command `watch -n30 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli getblockchaininfo`.  When the headers and blocks match, that will indicate that syncing is complete.
 
 ### Stake and Challenge Balance
 
