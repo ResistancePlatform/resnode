@@ -1,9 +1,6 @@
 #local vs files
 .vscode
 
-#config files
-config/*
-
 # temp copy of SSH keys
 .ssh/*
 

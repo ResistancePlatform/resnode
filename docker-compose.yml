@@ -12,7 +12,9 @@ services:
       -  "8132:8132"
       -  "8133:8133"
     volumes:      
-      - ${HOME}/resuser:/home/resuser      
+      - ${HOME}/resuser:/home/resuser
+    expose:
+      - "8132"
   watchtower:
     image: containrrr/watchtower
     # The repo credentials should be removed when the repo becomes publicly available

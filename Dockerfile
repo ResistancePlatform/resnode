@@ -8,7 +8,7 @@ RUN apt-get update && apt-get upgrade -y && \
 RUN groupadd -g 1001 resuser && useradd -r -u 1001 -g resuser resuser
 ARG RES_HOME=/home/resuser
 COPY . $RES_HOME/resnode
-RUN chown resuser:resuser $RES_HOME $RES_HOME/*
+RUN chown -R resuser:resuser $RES_HOME
 USER resuser
 WORKDIR $RES_HOME/resnode
 

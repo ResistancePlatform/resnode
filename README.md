@@ -59,6 +59,8 @@ Run this command twice to generate two z-addresses:
 `docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_sendmany $r_addr '[{"address": "'$z_addr1'", "amount":0.0249},{"address":"'$z_addr2'", "amount":0.0249}]'`
 6. Next, wait for the balance to transfer to the z-addresses (`private: 0.0498`)
 `docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_gettotalbalance`
+7. Now stop your resistance-core container:
+`docker stop $(docker ps | grep resistance-core | awk '{print $1}')`
 
 ### Create a domain name
 
@@ -81,40 +83,24 @@ You need to create a domain name for your site. You can do this using freenom.tk
 
 ### Add IP to your Config
 
-1. Add an entry into your resistance config. Note that you may need to run this command via `sudo` as your user account might not have permissions to the Masternode data directory.
-```bash
-sudo bash -c 'echo "externalip=YOUR_AWS_INSTANCE_PUBLIC_IP" >> ~/resuser/.resistance/resistance.conf'
-```
+Next, you will need to add some additional entries to your resnode config file. Note that your resnode container will start successfully until this has been done.
+
+1. Start up the resnode container via `docker run -d -v ~/resuser:/home/resuser resistanceio/resnode:latest`
+2. Run the init script via `docker exec -u resuser -w /home/resuser/resnode -it $(docker ps | grep resistanceio/resnode | awk '{print $1}') ./init.sh` At the prompts, enter your
+nodes FQDN (fully qualified domain name) which you set up in the last step, then enter your stake address and lastly your email address. The command/container will exit when you're done. Note this will update
+the ~/resuser/resnode/config/config.json file which you can modify directly in the future if needed. Also note that you may need sudo/root permissions to do so as the permissions will be tied to the resuser
+account which runs in the resistance-core and resnode containers.
 
 ### Running the Resistance Node Tracker
 
-1. First run resnode from Docker. . . use ~/resuser for persistence
-2. Run the Resistance Node Setup
-```docker exec . . . node setup.js
-```
-6. When prompted, enter your `stk_addr` that you have 10,000 RES in
-7. Enter an email address for alerts	
-8. Enter your Full hostname (FQDN) that you registered earlier
-9. Click enter when prompted about IP
-10. Click enter when promped about Region
-11. Click enter when prompted about Category
-12. You should now see: ***Configuration for testnet node saved. Setup complete!***
-
-todo:
-Command to add external ip, fail if not provided
-run setup interactively
-rebuild rescore image
-test up in AWS with a real DNS name!
-update doc accordingly
-
-### Start up your node
-You are now ready to start up your masternode!
-1. First stop the Resistance core and resnode containers, if they are still running. . .
-2. Now start them both up via docker-compose. . .
-3. 
+1. Now, you are ready to run your resnode and resistance-core servers together. First make sure that both Resistance containers are stopped by running these commands:
+`docker stop $(docker ps | grep resistanceio/resnode | awk '{print $1}')`
+`docker stop $(docker ps | grep resistanceio/resistance-core | awk '{print $1}')`
+If you see a message that "docker stop" requires at least 1 argument" then your container is no longer running.
+2. Using docker-compose, we will start up resistance-core and resnode together: 
+`docker-compose up -d`
 
 ### Viewing your Connectivity
-
 
 You can see a chart of your connectivity by going to:
 
