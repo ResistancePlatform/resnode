@@ -1,17 +1,23 @@
 require('dotenv').load()
-const Client = require('bitcoin-core')
-const client = new Client({
-  network: 'testnet',
-  port: 18132,
-  username: process.env.RPCUSER,
-  password: process.env.RPCPASSWORD
-})
-
-// client.getInfo().then((help) => console.log(help))
+const retry = require('async-retry');
+const fetch = require('node-fetch');
+const Client = require('bitcoin-core');
 
 class RpcClient {
-  constructor() {
-    this.rpcclient = client
+    constructor(options) {
+	const network = options.network || 'testnet';
+	const port = options.port || 18132;
+	const username = options.username || process.env.RPCUSER;
+	const password = options.password || process.env.RPCPASSWORD;
+	const host = options.host || 'localhost';
+	const client = new Client({
+	    network: network,
+	    host: host,
+	    port: port,
+	    username: username,
+	    password: password
+	});
+	this.rpcclient = client;
   }
 
   sleep(ms) {
@@ -46,7 +52,20 @@ class RpcClient {
   }
 
   async getInfo() {
-    await this.rpcclient.getInfo()
+      await retry(async bail => {
+	  // if anything throws, we retry
+	  const res = await fetch(`http://${this.host}:${this.port}`)
+
+	  // We're expecting a 405 method not allowed for a GET, which
+	  // means that resistance-core is running
+	  if (405 === res.status) {
+	      return
+	  }
+      }, {
+	  retries: 6,
+	  minTimeout: 5000
+      })
+      await this.rpcclient.getInfo()
   }
 
   async getCurrentBlock() {

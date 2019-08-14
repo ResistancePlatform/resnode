@@ -1,0 +1,27 @@
+version: '3'
+services:
+  resnode:
+    image: "index.docker.io/resistanceio/resnode:latest"    
+    ports:
+      -  "3000:3000"
+    volumes:
+      - ${HOME}/resuser:/home/resuser
+  resistance-core:
+    image: "index.docker.io/resistanceio/resistance-core:latest"
+    ports: # for the testnet, use ports 18132 and 18133
+      -  "8132:8132"
+      -  "8133:8133"
+    volumes:      
+      - ${HOME}/resuser:/home/resuser
+    expose:
+      - "8132"
+  watchtower:
+    image: containrrr/watchtower
+    # The repo credentials should be removed when the repo becomes publicly available
+    environment:
+      - REPO_USER=<REDACTED>
+      - REPO_PASS=<REDACTED>
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/home/matthew/.docker/config.json
+    command: --interval 30

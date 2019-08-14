@@ -1,5 +1,5 @@
 const fs = require('fs')
-
+const isDocker = require('is-docker');
 let oshome = require('os').homedir()
 
 oshome = process.env.RES_HOME || oshome
@@ -34,7 +34,7 @@ exports.getResistanceConfig = () => {
   let found4 = false
   let found6 = false
   let foundMax = false
-
+    
   lines.forEach((lineraw) => {
     const line = lineraw.trim()
     if (!line.startsWith('#')) {
@@ -60,20 +60,26 @@ exports.getResistanceConfig = () => {
         }
         if (data[0] === 'port') resistancecfg.port = data[1]
         if (data[0] === 'maxconnections') foundMax = true
+	if (data[0] === 'rpcuser') resistancecfg.rpcuser = data[1]
+	if (data[0] === 'rpcpassword') resistancecfg.password = data[1]
       }
     }
   })
 
   resistancecfg.rpchost = resistancecfg.rpcallowip || resistancecfg.rpcbind || 'localhost'
+  if (isDocker()) { //Assume that we're running from docker-compose alongside a resistance-core container
+    resistancecfg.rpchost = 'resistance-core';
+  }
   resistancecfg.testnet = testnet
   if (!resistancecfg.rpcport) {
-    resistancecfg.rpcport = testnet ? '18231' : '8231'
+    resistancecfg.rpcport = testnet ? '18232' : '8232'
   }
 
   // build url
   const url = `http://${resistancecfg.rpchost}:${resistancecfg.rpcport}`
   resistancecfg.url = url
-
+  console.log(`Using ${url} to communicate with resistance-core`);
+    
   if (foundMax) {
     console.log('Found maxconnections in resistance.conf.  Please remove.')
     process.exit()

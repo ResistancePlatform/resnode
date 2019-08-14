@@ -6,12 +6,15 @@ const SNode = require('./SNodeTracker').auto()
 const pkg = require('./package.json')
 const init = require('./init')
 const configuration = require('./config/config')
+const ResistanceCfg = require('./resistancecfg')
+const resistanceCfg = ResistanceCfg.getResistanceConfig();
 const RPC = require('./resistancerpc.js')
 const bodyParser = require('body-parser')
 const expressValidator = require('express-validator')
 const express = require('express')
 
-const rpc = new RPC()
+const options = {network: 'mainnet', port: resistanceCfg.rpcport, username: resistanceCfg.rpcuser, password: resistanceCfg.rpcpassword, host: resistanceCfg.rpchost};
+const rpc = new RPC(options);
 
 var app = express()
 app.use(expressValidator())

@@ -1,0 +1,17 @@
+{
+    "active": "super",
+    "super": {
+	"servers": [
+	    "resnode.resistance"
+	],
+	"nodetype": "super",
+	"stakeaddr": null,
+	"email": null,
+	"fqdn": null,
+	"ipv": "4",
+	"region": "na",
+	"home": "resnode.resistance",
+	"category": "none",
+	"nodeid": ""
+    }
+}
