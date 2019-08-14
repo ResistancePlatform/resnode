@@ -87,9 +87,7 @@ Next, you will need to add some additional entries to your resnode config file. 
 
 1. Start up the resnode container via `docker run -d -v ~/resuser:/home/resuser resistanceio/resnode:latest`
 2. Run the init script via `docker exec -u resuser -w /home/resuser/resnode -it $(docker ps | grep resistanceio/resnode | awk '{print $1}') ./init.sh` At the prompts, enter your
-nodes FQDN (fully qualified domain name) which you set up in the last step, then enter your stake address and lastly your email address. The command/container will exit when you're done. Note this will update
-the ~/resuser/resnode/config/config.json file which you can modify directly in the future if needed. Also note that you may need sudo/root permissions to do so as the permissions will be tied to the resuser
-account which runs in the resistance-core and resnode containers.
+nodes FQDN (fully qualified domain name) which you set up in the last step, then enter your stake address and lastly your email address. The command/container will exit when you're done. Note this will update the ~/resuser/resnode/config/config.json file which you can modify directly in the future if needed. Also note that you may need sudo/root permissions to do so as the permissions will be tied to the resuser account which runs in the resistance-core and resnode containers.
 
 ### Running the Resistance Node Tracker
 
