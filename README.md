@@ -25,6 +25,10 @@ First configure an EC2 instance on AWS. Here are the recommended parameters:
 
 Note: Ensure that you select **Echo Request** in the ICMP configuration. Echo Reply will not work.
 
+### Add Elastic IP
+
+Create an Elastic IP for the instance you created
+
 ### Install Docker and docker-compose
 
 Once you have the AWS instance up and running, you need to install and configure Docker and docker-compose.
