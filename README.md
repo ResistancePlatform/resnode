@@ -25,7 +25,17 @@ Note: Ensure that you select **Echo Request** in the ICMP configuration. Echo Re
 
 ### Add Elastic IP
 
-Create an Elastic IP for the instance you created
+Create an Elastic IP for the instance you created. 
+
+1. Click on "Elastic IPs" under "Network & Security" in the left scrollbar. 
+2. Click allocate new address button.
+3. Select "Amazon Pool", then click "Allocate"
+4. Make note of the IP it displays
+5. Scroll down to the IP that was created, select it, and click "Actions > Associate Address"
+6. Under "Instance" select the instance you created above
+7. For "Private IP" select the only option available
+8. Click "Associate"
+
 
 ### Install Docker and docker-compose
 
