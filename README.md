@@ -18,8 +18,7 @@ First configure an EC2 instance on AWS. Here are the recommended parameters:
 	- SSH (TCP 22) Enabled for your ip
 	- HTTP (TCP 80) Enabled for anyone
 	- HTTPS (TCP 443) Enabled for anyone
-	- TCP 18133 (Testnet)
-	- TCP 8133 (Mainnet)
+	- Custom TCP 8133 (Resistance Mainnet)
 	- Custom ICMP Rule - IPv4 - Echo Request - N/A - 0.0.0.0/0
 	- Custom ICMP Rule - IPv4 - Echo Request - N/A - ::/0
 
