@@ -42,9 +42,9 @@ sudo apt upgrade
 
 ### Stake and Challenge Balance
 
-1. In your local wallet (**not the one in AWS**), generate a new address and transfer 10,000.05 RES to this address. 
+1. In your local wallet (**not the one in AWS**), generate a new address and transfer 10,000.5 RES to this address. 
 
-*Note*:This balance will not be stored on your AWS instance, it will be safe in sound in your local wallet. You can even put it in a Ledger Wallet. Just make sure that you have 10,000 RES in an address that you don't plan on moving around, and make a note of this address. We will call this `stake_addr` from now on.
+*Note*:This balance will not be stored on your AWS instance, it will be safe in sound in your local wallet. You can even put it in a Ledger Wallet. Just make sure that you have 10,000 RES in an address that you don't plan on moving around, and make a note of this address. **DO NOT USE THIS ADDRESS FOR ANYTHING ELSE BUT HOLDING YOUR MASTERNODE FUNDS AND SETTING UP YOUR MASTERNODES**. If you use this address to send funds to someone else you may potentially allow them to receive credit for your masternode. We will call this masternode staking address `stake_addr` from now on.
 
 2. On the remote AWS instance generate an r-address (`r_addr`) and two z-addresses (`z_addr1` and `z_addr21`). Make note of these addresses.
 Use this command to generate an r-address:
@@ -52,12 +52,12 @@ Use this command to generate an r-address:
 Run this command twice to generate two z-addresses:
 `docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_getnewaddress`
 `docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_getnewaddress`
-3. In your **local wallet (not AWS)**, send 0.05 RES from `stake_addr` to `r_addr`
-4. On your **AWS Instance**, run the following command until you see the `transparent: 0.0499` appear
+3. In your **local wallet (not AWS)**, send 0.5 RES from `stake_addr` to `r_addr`. **You MUST transfer funds from stk_addr to r_addr in this step. This proves that you own the stk_addr and prevents other users from pretending that they own your address. If this step is not done, your masternode will not receive rewards.**
+4. On your **AWS Instance**, run the following command until you see the `transparent: 0.499` appear
 `watch -n 30 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_gettotalbalance`
 5. Once the balance appears there, run the following:
-`docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_sendmany $r_addr '[{"address": "'$z_addr1'", "amount":0.0249},{"address":"'$z_addr2'", "amount":0.0249}]'`
-6. Next, wait for the balance to transfer to the z-addresses (`private: 0.0498`)
+`docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_sendmany $r_addr '[{"address": "'$z_addr1'", "amount":0.2499},{"address":"'$z_addr2'", "amount":0.2499}]'`
+6. Next, wait for the balance to transfer to the z-addresses (`private: 0.4998`)
 `docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_gettotalbalance`
 7. Now stop your resistance-core container:
 `docker stop $(docker ps | grep resistance-core | awk '{print $1}')`
