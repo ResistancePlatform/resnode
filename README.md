@@ -99,9 +99,10 @@ Then to make sure docker-compose installed correctly run:
 docker-compose --version
 ```
 
-5. Before running a Resistance Masternode with Docker you need to initialize the Resistance core blockchain. To start with that, run Resistance core with Docker 
+5. Before running a Resistance Masternode with Docker you need to initialize the Resistance core blockchain. To start with that run Resistance core with Docker 
 
 ```
+cd ~/resuser/
 docker run --rm -d -v ~/resuser:/home/resuser -p 8132:8132 -p 8133:8133 resistanceio/resistance-core:latest
 ```
 
