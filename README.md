@@ -118,7 +118,7 @@ This will mount a directory in your home directory named `resuser`, this directo
 6. Now, wait for the blockchain to sync by running this command 
 
 ```
-watch -n2 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli getblockchaininfo
+watch -n10 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli getblockchaininfo
 ```
 
 When the headers and blocks match, that will indicate that syncing is complete.
