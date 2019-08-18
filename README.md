@@ -76,7 +76,14 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
 
-Then to make sure docker installed correctly run:
+Now we want to make sure that we don't have to run docker as root:
+
+```
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker 
+```
+Then to make sure docker installed correctly and can run without root run:
 
 ```
 sudo docker run hello-world
