@@ -82,11 +82,12 @@ Now we want to make sure that we don't have to run docker as root:
 sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker 
+sudo systemctl restart docker
 ```
 Then to make sure docker installed correctly and can run without root run:
 
 ```
-sudo docker run hello-world
+docker run hello-world
 ```
 
 3. We recommend that you configure Docker so that you can run commands as a non-root user, see the instructions in the Docker install guide.
