@@ -47,6 +47,41 @@ sudo apt update
 sudo apt upgrade
 ```
 2. Next install Docker, see the documentation here: https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-ce-1
+
+```
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+```
+
+```
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
+
+```
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+```
+
+```
+sudo apt-get update
+```
+
+```
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
+
+Then to make sure it's working run:
+
+```
+sudo docker run hello-world
+```
+
 3. We recommend that you configure Docker so that you can run commands as a non-root user, see the instructions in the Docker install guide.
 4. Install docker-compose, see the documentation here: https://docs.docker.com/compose/install/
 5. Before running a Resistance Masternode with Docker you need to initialize the Resistance core blockchain. To start with that, run Resistance core with Docker 
