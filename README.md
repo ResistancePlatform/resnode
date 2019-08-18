@@ -102,7 +102,7 @@ docker-compose --version
 5. Before running a Resistance Masternode with Docker you need to initialize the Resistance core blockchain. To start with that, run Resistance core with Docker 
 
 ```
-docker run --rm -d -v ~/resuser:/home/resuser -p 18132:18132 -p 18133:18133 resistanceio/resistance-core:latest
+docker run --rm -d -v ~/resuser:/home/resuser -p 8132:8132 -p 8133:8133 resistanceio/resistance-core:latest
 ```
 
 This will mount a directory in your home directory named `resuser`, this directory will be used for persistent storage for Resistance core e.g. the blockchain database.
