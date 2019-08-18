@@ -19,9 +19,8 @@ First configure an EC2 instance on AWS. Here are the recommended parameters:
 	- HTTP (TCP 80) Enabled for anyone
 	- HTTPS (TCP 443) Enabled for anyone
 	- Custom TCP 8133 (Resistance Mainnet)
-	- Custom ICMP Rule - IPv4 - Echo Request - N/A - 0.0.0.0/0
-	- Custom ICMP Rule - IPv4 - Echo Request - N/A - ::/0
-
+	- Custom ICMP Rule - IPv4 - Echo Request - N/A - Anywhere
+  
 Note: Ensure that you select **Echo Request** in the ICMP configuration. Echo Reply will not work.
 
 ### Add Elastic IP
