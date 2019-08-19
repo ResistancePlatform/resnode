@@ -211,7 +211,13 @@ docker stop $(docker ps | grep resistanceio/resistance-core | awk '{print $1}')
 ```
 
 If you see a message that "docker stop" requires at least 1 argument" then your container is no longer running.
-2. Using docker-compose, we will grab the config file and start up resistance-core and resnode together: 
+2. Now we need to add some information to the resistance config file inside the container. Replace YOUR_IP_ADDR with the Elastic IP address of your masternode and run:
+
+```
+docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') bash -c "echo externalip=YOUR_IP_ADDR >> ~/.resistance/resistance.conf"
+```
+
+3. Using docker-compose, we will grab the config file and start up resistance-core and resnode together: 
 
 ```
 cd ~
