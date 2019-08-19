@@ -211,9 +211,11 @@ docker stop $(docker ps | grep resistanceio/resistance-core | awk '{print $1}')
 ```
 
 If you see a message that "docker stop" requires at least 1 argument" then your container is no longer running.
-2. Using docker-compose, we will start up resistance-core and resnode together: 
+2. Using docker-compose, we will grab the config file and start up resistance-core and resnode together: 
 
 ```
+cd ~
+wget https://raw.githubusercontent.com/ResistancePlatform/resnode/master/docker-compose.yml
 docker-compose up -d
 ```
 
