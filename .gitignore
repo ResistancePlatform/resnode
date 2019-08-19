@@ -1,9 +1,8 @@
 #local vs files
 .vscode
 
-#config files
-config/*
-
+# temp copy of SSH keys
+.ssh/*
 
 #node modules
 node_modules/*
