@@ -152,9 +152,9 @@ docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}'
 ```
 watch -n 30 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_gettotalbalance
 ```
-5. Once the balance appears there, run the following:
+5. Once the balance appears there, run the following (replacing `R_ADDR`, `Z_ADDR_1`, and `Z_ADDR2` with the r_addr and z addresses you generated above in step 2):
 ```
-docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_sendmany $r_addr '[{"address": "'$z_addr1'", "amount":0.2499},{"address":"'$z_addr2'", "amount":0.2499}]'
+docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_sendmany R_ADDR '[{"address": "Z_ADDR_1", "amount":0.2499},{"address":"Z_ADDR2", "amount":0.2499}]'
 ```
 6. Next, wait for the balance to transfer to the z-addresses (`private: 0.4998`)
 ```
