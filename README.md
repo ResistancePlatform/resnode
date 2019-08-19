@@ -178,7 +178,7 @@ You need to create a domain name for your site. You can do this using freenom.tk
 7. Enter your email address and finish the registration process
 8. Log into your freenom account and go to: https://my.freenom.com/clientarea.php?action=domains
 9. Click "Manage Domain" next to the domain you just created
-10. Click "Manage Free DNS"
+10. Click "Manage Freenom DNS"
 11. Get your public IP address from your AWS instance by running: `curl https://httpbin.org/ip`, copy the ip that is printed out
 12. Enter the following: `Name: leave this empty`, `Type: A`, `TTL: 3600`, `Target: ip from your machine`
 13. Click save changes
