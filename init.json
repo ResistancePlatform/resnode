@@ -1,9 +1,9 @@
 {
   "servers": {
-    "secure": "https://resnodetracker.tk/api/srvlist",
-    "super": "https://resnodetracker.tk/api/srvlist",
-    "testnet": "https://resnodetracker.tk/api/srvlist"
+    "secure": "https://resnode.resistance.io/api/srvlist",
+    "super": "https://resnode.resistance.io/api/srvlist",
+    "testnet": "https://resnode.resistance.io/api/srvlist"
   },
-  "domain": "tk",
+  "domain": "io",
   "protocol": "https"
 }

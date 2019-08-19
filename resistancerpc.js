@@ -1,8 +1,8 @@
 require('dotenv').load();
 const Client = require('bitcoin-core');
 const client = new Client({ 
-	network: 'testnet',
-	port: 18132,
+	network: 'mainnet',
+	port: 8132,
 	username:process.env.RPCUSER,
 	password:process.env.RPCPASSWORD
 });
@@ -77,6 +77,21 @@ class RpcClient {
     }
   }
 
+  async verifyStake(stk_address, t_address) {
+    try {
+      if(stk_address && t_address) {
+        await this.rpcclient.importAddress(stk_address, "", false);
+	//await this.sleep(10000)
+        let transactions = await client.listTransactions()
+        console.log(transactions)
+      } else {
+        throw("Invalid Addresses")
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   async getTransactionReceived(address, txid) {
     try{
       var received = await this.rpcclient.command("z_listreceivedbyaddress", address, 0)
@@ -108,11 +123,11 @@ class RpcClient {
   }
 }
 
-/*;(async () => {
+;(async () => {
     try {
 	var rpc = new RpcClient()
 	var pubKeyResult = await rpc.getPublicKey(await rpc.getPublicAddress())
-	
+        await rpc.verifyStake("r11y83e7FS9AwWaHoHdUHMj67WhmDki4inb", "r16SVSMYd3ccxSnFn3cMVQs3WNFgUcMoVDt")	
 	//var privKey = await rpc.getPrivKey(await rpc.getPublicAddress())
 	//var message = "{data:'Here is some JSON'}"
 	//var signature = await rpc.signMessage(await rpc.getPublicAddress(), message)
@@ -123,6 +138,6 @@ class RpcClient {
         console.log(e)
         // Deal with the fact the chain failed
     }
-})();*/
+})();
 
 module.exports = RpcClient;
