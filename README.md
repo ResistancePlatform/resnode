@@ -125,7 +125,7 @@ When the headers and blocks match, that will indicate that syncing is complete.
 
 ### Stake and Challenge Balance
 
-1. In your local wallet (**not the one in AWS**), generate a new transparent address and transfer 10,000.5 RES to this address. 
+1. In your local wallet (**not the one in AWS**), generate a new transparent address and transfer 10,000.51 RES to this address. 
 
 *Note*:This balance will not be stored on your AWS instance, it will be safe in sound in your local wallet. You can even put it in a Ledger Wallet. Just make sure that you have 10,000 RES in an address that you don't plan on moving around, and make a note of this address. 
 
