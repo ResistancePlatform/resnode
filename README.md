@@ -215,7 +215,7 @@ If you see a message that "docker stop" requires at least 1 argument" then your 
 
 ```
 cd ~
-wget https://raw.githubusercontent.com/ResistancePlatform/resnode/master/docker-compose.yml
+wget -O docker-compose.yml https://raw.githubusercontent.com/ResistancePlatform/resnode/master/docker-compose.yml
 docker-compose up -d
 ```
 
