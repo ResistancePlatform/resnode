@@ -66,9 +66,11 @@ exports.getResistanceConfig = () => {
     }
   })
 
-  resistancecfg.rpchost = resistancecfg.rpcallowip || resistancecfg.rpcbind || 'localhost'
-  if (isDocker()) { //Assume that we're running from docker-compose alongside a resistance-core container
+  
+  if (isDocker()) { // E.g. we're running from docker-compose alongside a resistance-core container
     resistancecfg.rpchost = 'resistance-core';
+  } else {
+      resistancecfg.rpchost = resistancecfg.rpcallowip || resistancecfg.rpcbind || 'localhost'
   }
   resistancecfg.testnet = testnet
   if (!resistancecfg.rpcport) {

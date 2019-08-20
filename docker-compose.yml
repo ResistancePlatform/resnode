@@ -6,6 +6,8 @@ services:
       -  "3000:3000"
     volumes:
       - ${HOME}/resuser:/home/resuser
+    depends_on:
+      - "resistance-core"
   resistance-core:
     image: "index.docker.io/resistanceio/resistance-core:latest"
     ports: # for the testnet, use ports 18132 and 18133
