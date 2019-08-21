@@ -54,7 +54,7 @@ class RpcClient {
   async getInfo() {
       await retry(async bail => {
 	  // if anything throws, we retry
-	  const res = await fetch(`http://${this.host}:${this.port}`)
+	  const res = await fetch(`http://${this.rpcclient.host}:${this.rpcclient.port}`)
 
 	  // We're expecting a 405 method not allowed for a GET, which
 	  // means that resistance-core is running
@@ -62,7 +62,7 @@ class RpcClient {
 	      return
 	  }
       }, {
-	  retries: 6,
+	  retries: 10,
 	  minTimeout: 5000
       })
       await this.rpcclient.getInfo()
