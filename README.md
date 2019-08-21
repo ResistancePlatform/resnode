@@ -229,7 +229,7 @@ docker-compose up -d
 
 You can see a chart of your connectivity by going to:
 
-https://resnodetracker.tk/?uuid=YOUR_UUID
+https://resnode.resistance.io/?uuid=YOUR_UUID
 
 You can find your UUID in `config/config.json` under `node_id`
 
