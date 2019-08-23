@@ -13,7 +13,7 @@ First configure an EC2 instance on AWS. Here are the recommended parameters:
 	- At least 2 vCPUS
 	- At least 4 GiB Memory
 3. Network: Pick a network with Internet access and a public IP
-4. Disk: 500 GiB
+4. Disk: 400 GiB
 5. Security Group: Create a new Security group with
 	- SSH (TCP 22) Enabled for your ip
 	- HTTP (TCP 80) Enabled for anyone
