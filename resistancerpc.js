@@ -62,8 +62,9 @@ class RpcClient {
 	      return
 	  }
       }, {
-	  retries: 10,
-	  minTimeout: 5000
+	  retries: 100,
+	  minTimeout: 5000,
+	  maxTimeout: 10000
       })
       await this.rpcclient.getInfo()
   }
