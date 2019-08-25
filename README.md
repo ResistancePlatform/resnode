@@ -2,6 +2,8 @@
 
 ## Configure A Resistance Masternode with Docker
 
+**PLEASE FOLLOW EVERY STEP OF THIS GUIDE CLOSELY: If you skip a step, it will not work.**
+
 ### Setup an EC2 instance on AWS
 
 **Note**: For this document we will assume that you are using AWS. These instructions may need to be adjusted to work with other cloud providers.
@@ -115,10 +117,10 @@ docker run --rm -d -v ~/resuser:/home/resuser -p 8132:8132 -p 8133:8133 resistan
 
 This will mount a directory in your home directory named `resuser`, this directory will be used for persistent storage for Resistance core e.g. the blockchain database.
 
-6. Now, wait for the blockchain to sync by running this command 
+6. Now, wait for the blockchain to sync by running this command repeatedly (will take at least 10 min)
 
 ```
-watch -n10 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli getblockchaininfo
+docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli getblockchaininfo
 ```
 
 When the headers and blocks match, that will indicate that syncing is complete.
@@ -152,9 +154,9 @@ docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}'
 ```
 
 3. In your **local wallet (not AWS)**, send 0.5 RES from `stake_addr` to `r_addr`. **You MUST transfer funds from stk_addr to r_addr in this step. This proves that you own the stk_addr and prevents other users from pretending that they own your address. If this step is not done, your masternode will not receive rewards.**
-4. On your **AWS Instance**, run the following command until you see the `transparent: 0.499` appear
+4. On your **AWS Instance**, run the following command repeatedly until you see the `transparent: 0.499` appear
 ```
-watch -n 30 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_gettotalbalance
+docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_gettotalbalance
 ```
 5. Once the balance appears there, run the following (replacing `R_ADDR`, `Z_ADDR_1`, and `Z_ADDR2` with the r_addr and z addresses you generated above in step 2):
 ```
@@ -164,7 +166,13 @@ docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}'
 ```
 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_gettotalbalance
 ```
-7. Now stop your resistance-core container:
+7. Now we need to add some information to the resistance config file inside the container. Replace YOUR_IP_ADDR with the Elastic IP address of your masternode and run:
+
+```
+docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') bash -c "echo externalip=YOUR_IP_ADDR >> ~/.resistance/resistance.conf"
+```
+
+8. Now stop your resistance-core container:
 ```
 docker stop $(docker ps | grep resistance-core | awk '{print $1}')
 ```
@@ -184,7 +192,7 @@ You need to create a domain name for your site. You can do this using freenom.tk
 9. Click "Manage Domain" next to the domain you just created
 10. Click "Manage Freenom DNS"
 11. Get your public IP address from your AWS instance by running: `curl https://httpbin.org/ip`, copy the ip that is printed out
-12. Enter the following: `Name: leave this empty`, `Type: A`, `TTL: 3600`, `Target: ip from your machine`
+12. Enter the following: `Name: leave this empty`, `Type: A`, `TTL: 600`, `Target: ip from your machine`
 13. Click save changes
 14. After a few minutes ping the domain you created and make sure it's accessible.
 
@@ -215,11 +223,6 @@ docker stop $(docker ps | grep resistanceio/resistance-core | awk '{print $1}')
 ```
 
 If you see a message that "docker stop" requires at least 1 argument" then your container is no longer running.
-2. Now we need to add some information to the resistance config file inside the container. Replace YOUR_IP_ADDR with the Elastic IP address of your masternode and run:
-
-```
-docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') bash -c "echo externalip=YOUR_IP_ADDR >> ~/.resistance/resistance.conf"
-```
 
 3. Using docker-compose, we will grab the config file and start up resistance-core and resnode together: 
 
