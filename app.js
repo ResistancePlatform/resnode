@@ -27,7 +27,6 @@ const listener = server.listen(3000, async function () {
   } catch (err) {
     console.log(err)
     console.log(`You must have the resistance daemon running to start the app`)
-    process.exit()
   }
 })
 
