@@ -128,10 +128,11 @@ When the headers and blocks match, that will indicate that syncing is complete.
 ### Stake and Challenge Balance
 
 1. In your local wallet (**not the one in AWS**), generate a new transparent address. 
-    - Transfer 10,000 RES to this address. 
+    - Transfer 10,001 RES to this address. 
     - Transfer 0.51 RES to this same address.
+    - Transfer 0.1 RES to this same address
     
-**Make sure to make two transactions (one with 10,000 and one with 0.51 RES). Don't just combine them into one. It will make your life easier**.
+**Make sure to make 3 transactions (one with 10,001, one with 0.51 RES, and one with 0.1 RES). Don't just combine them into one. It will make your life easier**.
 
 *Note*:This balance will not be stored on your AWS instance, it will be safe in sound in your local wallet. You can even put it in a Ledger Wallet. Just make sure that you have 10,000 RES in an address that you don't plan on moving around, and make a note of this address. 
 
@@ -153,7 +154,7 @@ docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}'
 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_getnewaddress
 ```
 
-3. In your **local wallet (not AWS)**, send 0.5 RES from `stake_addr` to `r_addr`. **You MUST transfer funds from stk_addr to r_addr in this step. This proves that you own the stk_addr and prevents other users from pretending that they own your address. If this step is not done, your masternode will not receive rewards.**
+3. In your **local wallet (not AWS)**, send 0.5 RES from `stake_addr` to `r_addr`.
 4. On your **AWS Instance**, run the following command repeatedly until you see the `transparent: 0.499` appear
 ```
 docker exec -it -u resuser $(docker ps | grep resistance-core | awk '{print $1}') ./resistance/resistance-cli z_gettotalbalance
@@ -231,12 +232,41 @@ cd ~
 wget -O docker-compose.yml https://raw.githubusercontent.com/ResistancePlatform/resnode/master/docker-compose.yml
 docker-compose up -d
 ```
+4. Once it starts up, run the following:
+
+```
+docker-compose logs -f
+```
+After a few seconds, you should see text that looks like (copy the R_PROVING_ADDR value): 
+
+```
+Node t_address (not for stake)=R_PROVING_ADDR
+```
+4. On your local instance (where you are storing you `stk_addr`) create a transaction and send 0.01 RES from your `stk_addr` to the `R_PROVING_ADDR` that you just copied. This will prove that you own the `stk_addr`.  **You MUST transfer funds from stk_addr to `R_PROVING_ADDR` in this step. This proves that you own the stk_addr and prevents other users from pretending that they own your address. If this step is not done, your masternode will not receive rewards.**
+
+**Note: When you create a transaction using Resistance, change is returned to your wallet but is not necessarily returned to the same address you used to send the funds. By the time you finish this guide, please check to make sure your balance in stk_address is at least 10,000.** You can do this easily by looking on our block explorer at https://blockexplorer.resistance.io and entering your `stk_address`. If it shows a balance of 0, it's likely because the change was delivered to another address in your wallet. You will need to make another transfer and ensure that `stk_address`is the address that has 10,000 in it.
 
 ### Viewing your Connectivity
+
+You can get information about your ping, stake amount, and challenge response here:
+
+https://resnode.resistance.io/connectivity?uuid=YOUR_UUID
+
+**Please note that in order to receive Masternode payouts your ping and challenge must be 1 and your stake balance must be over 10,000. Your node will be checked at random intervals, and you must achieve these metrics at least 90% of the time.**
 
 You can see a chart of your connectivity by going to:
 
 https://resnode.resistance.io/?uuid=YOUR_UUID
 
 You can find your UUID in `config/config.json` under `node_id`
+
+### Restarting Docker Containers
+
+If you are having any issues, a good place to start is to restart your docker containers:
+
+```
+cd ~
+docker-compose down
+docker-compose up -d
+```
 
