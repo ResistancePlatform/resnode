@@ -2,11 +2,17 @@ require('dotenv').load()
 const retry = require('async-retry');
 const fetch = require('node-fetch');
 const Client = require('bitcoin-core');
+const client = new Client({ 
+	network: 'mainnet',
+	port: 8132,
+	username:process.env.RPCUSER,
+	password:process.env.RPCPASSWORD
+});
 
 class RpcClient {
     constructor(options) {
 	const network = options.network || 'testnet';
-	const port = options.port || 18132;
+	const port = options.port || 8132;
 	const username = options.username || process.env.RPCUSER;
 	const password = options.password || process.env.RPCPASSWORD;
 	const host = options.host || 'localhost';
@@ -94,6 +100,21 @@ class RpcClient {
     }
   }
 
+  async verifyStake(stk_address, t_address) {
+    try {
+      if(stk_address && t_address) {
+        await this.rpcclient.importAddress(stk_address, "", false);
+	//await this.sleep(10000)
+        let transactions = await client.listTransactions()
+        console.log(transactions)
+      } else {
+        throw("Invalid Addresses")
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   async getTransactionReceived(address, txid) {
     try {
       var received = await this.rpcclient.command('z_listreceivedbyaddress', address, 0)
@@ -124,6 +145,7 @@ class RpcClient {
     }
   }
 }
+
 
 /* ;(async () => {
     try {
